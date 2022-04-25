@@ -1,0 +1,64 @@
+<odoo>
+  <data>
+    <record id="crm_lead_view_form_inherit_crm" model="ir.ui.view">
+      <field name="name">crm.lead.view.form.inherit</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+          <page string="Kuesioner">
+            <group string="Type of business">
+              <field name="business_type_id" />
+            </group>
+            <group string="Water Source Conditions">
+              <field name="ground_water" />
+              <field name="surface_water" widget="radio" options="{'horizontal':True}" />
+              <field name="seawater" widget="radio" options="{'horizontal':True}" />
+              <field name="waste_water_treatment" widget="radio" options="{'horizontal':True}"/>
+              <field name="distance_from_rawwater" />
+              <field name="elevation_from_rawwater" />
+            </group>
+
+            <group string="Site Conditions">
+              <field name="length_treatment_plant" />
+              <field name="width_treatment_plant" />
+              <field name="height_treatment_plant" />
+              <field name="gradient_treatment_plant" />
+              <field name="wind_load" />
+              <field name="specific_governmental" />
+              <field name="specific_material" />
+              <field name="any_data_available" />
+              <field name="flange_type" />
+              <field name="is_seasonal_deviations" />
+              <field name="is_height_limitation" />
+              <field name="is_area_limitation" />
+              <field name="is_limitation_to_transport_tanks" />
+              <field name="transport_id" />
+            </group>
+            <group string="Electrical Condition On Location">
+              <field name="voltage" />
+              <field name="frequency" />
+              <field name="available_power" />
+              <field name="power" />
+              <field name="source_power" />
+            </group>
+          </page>
+          <page string="Description of the Area">
+            <group>
+              <field name="description_area" colspan="4" nolabel="1"/>
+              <field name="is_attachment" />
+              <field name="attachment_area" widget="image" attrs="{'invisible':[('is_attachment','=',False)]}" nolabel="1" colspan="4"/>
+            </group>
+          </page>
+          <page string="Description of the Area">
+            <group string="Additional Remarks or Documentations (Pictures, Sketches)">
+              <field name="description_remarks" nolabel="1" colspan="4"/>
+              <field name="attachment_remarks" />
+            </group>
+          </page>
+
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

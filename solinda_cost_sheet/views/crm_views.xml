@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+        <record id="crm_lead_view_form_inherit_crm" model="ir.ui.view">
+            <field name="name">crm.lead.view.form.inherit</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//div[2]/h2" position="attributes">
+                    <attribute name="attrs">{'invisible':[('crm_type','!=', 'crm')]}</attribute>
+                </xpath> -->
+
+                <field name="tag_ids" position="after">
+                    <!-- <field name="rab_template_id" /> -->
+                    <!-- <field name="crm_type" invisible="1" /> -->
+                    <field name="rab_id" />
+                </field>
+                <xpath expr="//notebook" position="inside">
+
+                    <page string="Kuesioner">
+                        <group string="Type of business">
+                            <field name="business_type_id" />
+                        </group>
+                        <group string="Water Source Conditions">
+                            <field name="ground_water" />
+                            <field name="surface_water" widget="radio" options="{'horizontal':True}" />
+                            <field name="seawater" widget="radio" options="{'horizontal':True}" />
+                            <field name="waste_water_treatment" widget="radio" options="{'horizontal':True}"/>
+                            <field name="distance_from_rawwater" />
+                            <field name="elevation_from_rawwater" />
+                        </group>
+
+                        <group string="Site Conditions">
+                            <field name="length_treatment_plant" />
+                            <field name="width_treatment_plant" />
+                            <field name="height_treatment_plant" />
+                            <field name="gradient_treatment_plant" />
+                            <field name="wind_load" />
+                            <field name="specific_governmental" />
+                            <field name="specific_material" />
+                            <field name="any_data_available" />
+                            <field name="flange_type" />
+                            <field name="is_seasonal_deviations" />
+                            <field name="is_height_limitation" />
+                            <field name="is_area_limitation" />
+                            <field name="is_limitation_to_transport_tanks" />
+                            <field name="transport_id" />
+                        </group>
+                        <group string="Electrical Condition On Location">
+                            <field name="voltage" />
+                            <field name="frequency" />
+                            <field name="available_power" />
+                            <field name="power" />
+                            <field name="source_power" />
+                        </group>
+                    </page>
+                    <page string="Description of the Area">
+                        <group>
+                            <field name="description_area" colspan="4" nolabel="1"/>
+                            <field name="is_attachment" />
+                            <field name="attachment_area" widget="image" attrs="{'invisible':[('is_attachment','=',False)]}" nolabel="1" colspan="4"/>
+                        </group>
+                    </page>
+                    <page string="Additional Remarks or Documentations (Pictures, Sketches)">
+                        <group string="Additional Remarks or Documentations (Pictures, Sketches)">
+                            <field name="description_remarks" nolabel="1" colspan="4"/>
+                            <field name="attachment_remarks" />
+                        </group>
+                    </page>
+
+                    <!-- <page string="Invoice Line" attrs="{'invisible':[('crm_type','!=', 'rab')]}">
+                        <field name="sale_line_ids">
+                            <tree editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="company_id" invisible="1" />
+                                <field name="product_id" />
+                                <field name="name" />
+                                <field name="product_uom_category_id" invisible="1" />
+                                <field name="product_uom" />
+                                <field name="product_uom_qty" />
+                                <field name="price_unit" />
+                            </tree>
+                        </field>
+                    </page> -->
+
+                </xpath>
+            </field>
+        </record>
+
+
+
+
+
+        <!-- Action RAB -->
+
+        <record model="ir.actions.act_window" id="crm.crm_lead_action_pipeline">
+            <field name="name">Pipeline</field>
+            <field name="res_model">crm.lead</field>
+            <field name="view_mode">kanban,tree,graph,pivot,form,calendar,activity</field>
+            <field name="domain">[('type','=','opportunity')]</field>
+            <field name="context">{
+                    'default_type': 'opportunity',
+                    'default_crm_type': 'crm',
+                    'search_default_assigned_to_me': 1
+            }</field>
+            <field name="search_view_id" ref="crm.view_crm_case_opportunities_filter"/>
+        </record>
+
+
+
+
+        <!-- <record model="ir.actions.act_window" id="crm_rab_action">
+            <field name="name">RAB</field>
+            <field name="res_model">crm.lead</field>
+            <field name="view_mode">kanban,tree,graph,pivot,form,calendar,activity</field>
+            <field name="domain">[('type','=','opportunity')]</field>
+            <field name="context">{
+                    'default_type': 'opportunity',
+                    'default_crm_type': 'rab',
+                    'search_default_assigned_to_me': 1
+            }</field>
+            <field name="search_view_id" ref="crm.view_crm_case_opportunities_filter"/>
+        </record>
+
+        <record id="crm_rab_action_view_kanban" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="crm.crm_case_kanban_view_leads"/>
+            <field name="act_window_id" ref="crm_rab_action"/>
+        </record>
+
+        <record id="crm_rab_action_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="crm.crm_case_tree_view_oppor"/>
+            <field name="act_window_id" ref="crm_rab_action"/>
+        </record>
+
+        <record id="crm_rab_action_view_calendar" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="crm.crm_case_calendar_view_leads"/>
+            <field name="act_window_id" ref="crm_rab_action"/>
+        </record>
+
+        <record id="crm_rab_action_view_pivot" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">pivot</field>
+            <field name="view_id" ref="crm.crm_lead_view_pivot"/>
+            <field name="act_window_id" ref="crm_rab_action"/>
+        </record>
+
+        <record id="crm_rab_action_view_graph" model="ir.actions.act_window.view">
+            <field name="sequence" eval="5"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="crm.crm_lead_view_graph"/>
+            <field name="act_window_id" ref="crm_rab_action"/>
+        </record> -->
+
+
+
+
+
+
+    </data>
+
+
+</odoo>

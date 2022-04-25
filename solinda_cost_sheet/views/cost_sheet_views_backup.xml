@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <!-- VIEW RAB -->
+        <record id="cost_sheet_rab_view_tree" model="ir.ui.view">
+            <field name="name">cost.sheet.rab.view.tree</field>
+            <field name="model">cost.sheet</field>
+            <field name="arch" type="xml">
+                <tree sample="1">
+                    <field name="name" />
+                    <field name="date_document" />
+                    <field name="user_id" />
+                    <field name="currency_id" invisible="1" />
+                    <field name="total_amount" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                    <field name="state" widget="badge" decoration-info="state == 'submit'" decoration-success="state == 'done'" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="cost_sheet_rab_view_form" model="ir.ui.view">
+            <field name="name">cost.sheet.rab.view.form</field>
+            <field name="model">cost.sheet</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button string="Submit" name="action_submit" states="draft" type="object" class="oe_highlight"/>
+                        <button string="Done" name="action_done" states="submit" type="object" class="oe_highlight"/>
+                        <button string="Set to Draft" name="action_to_draft" states="done" type="object"/>
+                        <button string="Create Purchase Agreement" name="action_create_requisition" type="object" invisible="1"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submit,done" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_crm" type="object" string="CRM" class="oe_stat_button" icon="fa-handshake-o" attrs="{'invisible':[('state','=','draft')]}"/>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="crm_id" required="1" />
+                            <field name="partner_id" />
+                            <field name="rab_template_id" />
+                            <field name="date_document" />
+                            <field name="margin_type" widget="radio" options="{'horizontal':true}" />
+                            <field name="user_id" readonly="1" />
+                            <field name="currency_id" invisible="1" />
+                        </group>
+                        <notebook>
+                            <page string="RAB">
+                                <field name="rab_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="product_uom_category_id" invisible="1" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="uom_id" domain="[('category_id', '=', product_uom_category_id)]" />
+                                        <field name="price_unit" />
+                                        <field name="propotional_percent" widget="percentage" />
+                                        <field name="suggested_proposional_percent" widget="percentage" />
+                                        <field name="commercial_price_percentage" />
+                                        <field name="commercial_price" widget="percentage" />
+                                    </tree>
+
+                                </field>
+                                <group name="note_group" col="6" class="mt-2 mt-md-0">
+                                    <group colspan="4">
+                                        <field name="note" nolabel="1" placeholder="Terms and conditions..."/>
+                                    </group>
+                                    <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                        <field name="total_without_margin" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                        <field name="margin_amount_input" attrs="{'invisible':[('margin_type','=','percentage')]}" />
+                                        <field name="margin_percent_input" widget="percentage" attrs="{'invisible':[('margin_type','=','amount')]}" />
+                                        <field name="total_margin" widget="monetary" attrs="{'invisible':[('margin_type','=','amount')]}" options="{'currency_field': 'currency_id'}"/>
+                                        <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                            <label for="total_amount"/>
+                                        </div>
+                                        <field name="total_amount" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    </group>
+                                    <div class="oe_clear"/>
+                                </group>
+                            </page>
+                            <page string="General Work">
+                                <field name="general_work_line_ids" domain="[('type','=','general_work')]" content="{'default_type':'general_work'}" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" />
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Intake Package">
+                                <field name="intake_package_line_ids" domain="[('type','=','intake_package')]" context="{'default_type':'intake_package'}" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" />
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Pretreatment Package">
+                                <field name="pretreatment_package_line_ids" domain="[('type','=','pretreatment_package')]" context="{'default_type':'pretreatment_package'}" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" />
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="SWRO Package">
+                                <field name="swro_package_line_ids" domain="[('type','=','swro_package')]" context="{'default_type':'swro_package'}" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" />
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Brine Injection Package">
+                                <field name="brine_injection_package_line_ids" domain="[('type','=','brine_injection_package')]" context="{'default_type':'brine_injection_package'}" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" />
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Product Package">
+                                <field name="product_package_line_ids" domain="[('type','=','product_package')]" context="{'default_type':'product_package'}" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" />
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Electrical Package">
+                                <field name="electrical_package_line_ids" domain="[('type','=','electrical_package')]" context="{'default_type':'electrical_package'}" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" />
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Civil Work">
+                                <field name="civil_work_line_ids" domain="[('type','=','civil_work')]" context="{'default_type':'civil_work'}" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" />
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <!-- <page string="General Work">
+                                <field name="general_work_line_ids" domain="[('type','=','intake_package')]" context="{'default_type':'intake_package'}" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" />
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page> -->
+
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- END VIEW RAB -->
+
+
+
+
+        <record id="cost_sheet_rab_action" model="ir.actions.act_window">
+            <field name="name">Cost Sheet</field>
+            <field name="res_model">cost.sheet</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                Create a new Cost Sheet
+                </p>
+            </field>
+        </record>
+
+
+
+
+    </data>
+
+
+</odoo>

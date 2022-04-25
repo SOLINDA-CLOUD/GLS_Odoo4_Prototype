@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="approval_approval_view_tree" model="ir.ui.view">
+        <field name="name">approval.approval.view.tree</field>
+        <field name="model">approval.approval</field>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="name" />
+                <field name="active" widget="boolean_toggle" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="approval_approval_view_form" model="ir.ui.view">
+        <field name="name">approval.approval.view.form</field>
+        <field name="model">approval.approval</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="active" widget="boolean_toggle" />
+                        <field name="approval_type" widget="radio" options="{'horizontal':True}" />
+
+                    </group>
+                    <field name="approver_line_ids">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field name="name" />
+                            <field name="amount" />
+                            <field name="user_ids" widget="many2many_tags" attrs="{'column_invisible':[('parent.approval_type','=','group')]}" />
+                            <field name="group_ids" widget="many2many_tags" attrs="{'column_invisible':[('parent.approval_type','=','user')]}" />
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="approval_approval_action" model="ir.actions.act_window">
+        <field name="name">Aproval</field>
+        <field name="res_model">approval.approval</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <!-- <field name="help" type="html">
+            
+        </field> -->
+    </record>
+
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="cost_sheet_root_menu" name="Cost Sheet" web_icon="solinda_cost_sheet,static/description/icon.png"/>
+
+    <!-- <menuitem id="cost_sheet_main_menu" name="Cost Sheet" parent="cost_sheet_root_menu"/> -->
+    <menuitem id="configuration_main_menu" name="Configuration" parent="cost_sheet_root_menu"/>
+
+
+    <menuitem id="crm_cost_sheet_menu" name="Cost Sheet" action="cost_sheet_rab_action" parent="cost_sheet_root_menu" sequence="1" />
+    <menuitem id="sale_cost_sheet_menu" name="Quotation" action="sale.action_quotations_with_onboarding" parent="cost_sheet_root_menu" sequence="2" />
+    <menuitem id="rap_cost_sheet_menu" name="RAP" action="cost_sheet_rap_action" parent="cost_sheet_root_menu" sequence="3" />
+
+    <menuitem id="configuration_rab_template_cost_sheet_menu" name="RAB Template" action="rab_template_action" parent="configuration_main_menu" />
+    <menuitem id="configuration_approval_rap_menu" name="Approval" action="approval_approval_action" parent="configuration_main_menu" />
+
+
+    <!-- CRM -->
+    <!-- <menuitem id="kuesioner_menu" name="Kuesioner" parent="crm.crm_menu_config" sequence="99">
+        <menuitem id="configuration_rab_template_cost_sheet_menu" name="RAB Template" action="rab_template_action" parent="kuesioner_menu" />
+
+    </menuitem> -->
+</odoo>
