@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="gls_reportingexternal_layout_standard_printout">
+        <div class="header">
+            <div class="col-xs-2">
+                <image src="/ati_srf_report/static/src/img/logo2.png" style="display: inline;width: 120px;height: 75px;margin: 10px;"/>
+                <!-- <h3>PT. SRI REJEKI FERTILIZER</h3> -->
+            </div>
+        </div>
+        <div class="article o_report_layout_standard">
+            <t t-raw="0" />
+        </div>
+        <div class="footer">
+            <div class="text-center">
+                <strong>PT. GAPURA LIQOUA SOLUTIONS</strong>
+                <br/>
+                Jl Cihampelas No. 214A, Bandung 40131, West Java, Indonesia
+                <ul class="list-inline mb4">
+                    <li class="list-inline-item">p.+62 22 2035 280</li>
+                    <li class="list-inline-item">f.+62 22 2035 290</li>
+                    <li class="list-inline-item">e.info@gapuraliquasolutions.com </li>
+                    <li class="list-inline-item">www.gapuraliquasolutions.com</li>
+                    <!-- <li t-if="doc.company_id.vat" class="list-inline-item"><t t-esc="(company.country_id.vat_label or 'Tax ID').replace(' ','\N{NO-BREAK SPACE}')"/>: <span t-esc="company_id.vat.replace(' ','\N{NO-BREAK SPACE}')"/></li> -->
+                </ul>
+            </div>
+        </div>
+    </template>
+
+
+
+    <template id="report_quotation_oms">
+        <t t-call="web.basic_layout">
+            <div class="page">
+                <t t-foreach="docs" t-as="doc">
+                    <header>
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <!-- <image src="/gls_reporting/static/src/img/gls_logo.png" style="display: inline;width: 225px;height: 125px;"/> -->
+                                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 125px;" alt="Logo"/>
+                            </div>
+                            <div class="col-xs-2">
+
+                            </div>
+                        </div>
+                    </header>
+                    <!-- <div class="header" t-att-style="report_header_style">
+                        <div class="row">
+                            <div class="col-3 mb4">
+                                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                            </div>
+                            <div class="col-9 text-right" style="margin-top:22px;" t-field="company.report_header" name="moto"/>
+                        </div>
+                        
+                    </div> -->
+                    <h5 style="text-decoration: underline; text-align:center;">
+                        <strong>QUOTATION</strong>
+                    </h5>
+                    <table style="table-layout: fixed; border-collapse: collapse; width: 100%; height: 144px;">
+                        <tbody style="font-size: 15px;">
+                            <tr style="height: 18px;">
+                                <td style="width: 9.51851%; height: 18px;">To</td>
+                                <td style="width: 1.97972%; height: 18px;">:</td>
+                                <td style="width: 38.1214%; height: 18px;">Shangri - La, The Maj, Nusa Dua</td>
+                                <td style="width: 8.52077%; height: 18px;"></td>
+                                <td style="width: 7.85545%; height: 18px;">Date</td>
+                                <td style="width: 1.97975%; height: 18px;">:</td>
+                                <td style="width: 32.0241%; height: 18px;">February 24, 2022</td>
+                            </tr>
+                            <tr style="height: 18px;">
+                                <td style="width: 9.51851%; height: 18px;">Address</td>
+                                <td style="width: 1.97972%; height: 18px;">:</td>
+                                <td style="width: 38.1214%; height: 18px;">Kawasan ITDC, Lot S5, Nusa Dua</td>
+                                <td style="width: 8.52077%; height: 18px;"></td>
+                                <td style="width: 7.85545%; height: 18px;">From</td>
+                                <td style="width: 1.97975%; height: 18px;">:</td>
+                                <td style="width: 32.0241%; height: 18px;">PT. Gapura Liqua Solutions</td>
+                            </tr>
+                            <tr style="height: 18px;">
+                                <td style="width: 9.51851%; height: 18px;">Attn</td>
+                                <td style="width: 1.97972%; height: 18px;">:</td>
+                                <td style="width: 38.1214%; height: 18px;">Bpk Antonius Palance</td>
+                                <td style="width: 8.52077%; height: 18px;"></td>
+                                <td style="width: 7.85545%; height: 18px;">Ref</td>
+                                <td style="width: 1.97975%; height: 18px;">:</td>
+                                <td style="width: 32.0241%; height: 18px;">007/GLS/QUO/III/22</td>
+                            </tr>
+                            <tr style="height: 18px;">
+                                <td style="width: 9.51851%; height: 18px;">email</td>
+                                <td style="width: 1.97972%; height: 18px;">:</td>
+                                <td style="width: 38.1214%; height: 18px;">
+                                    <a href="mailto:palance@balinational.com">palance@balinational.com</a>
+                                </td>
+                                <td style="width: 8.52077%; height: 18px;"></td>
+                                <td style="width: 7.85545%; height: 18px;">Subject</td>
+                                <td style="width: 1.97975%; height: 18px;">:</td>
+                                <td style="width: 32.0241%; height: 18px;">
+                                    <strong>Operational &amp; Monitoring Service BWRO</strong>
+                                </td>
+                            </tr>
+                            <tr style="height: 18px;">
+                                <td style="text-align: center; height: 18px; width: 99.9997%;" colspan="7"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; width: 99.9997%;" colspan="7">
+                                    <div>
+                                    Dear Ibu,<br />
+                                    <br />
+                                    We have the pleasure to offer you the under mentioned operation and maintenance services for Brackish Water Reverse Osmosis Capacity 300 CMD with the best price on terms and conditions <br />
+                                    hereinafter set forth, as follow:</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; width: 99.9997%;" colspan="7">
+                                <table style="table-layout: fixed; border-collapse: collapse; width: 95%;" border="1">
+                                    <thead>
+                                        <tr>
+                                            <td style="width: 4.14635%; height: 36px; text-align: center; border: 1px solid black;">
+                                                <strong>No</strong>
+                                            </td>
+                                            <td style="width: 44.5562%; height: 36px; text-align: center; border: 1px solid black;" colspan="2">
+                                                <strong>Items</strong>
+                                            </td>
+                                            <td style="width: 10.9648%; height: 36px; text-align: center; border: 1px solid black;">
+                                                <strong>Quantity</strong>
+                                            </td>
+                                            <td style="width: 39.0316%; height: 36px; text-align: center; border: 1px solid black;">
+                                                <strong>Unit Price (Rp)</strong>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="width: 4.14635%; text-align: center; vertical-align : top; border: 1px solid black;">
+                                                <strong>1</strong>
+                                            </td>
+                                            <td style="width: 44.5562%; vertical-align : top; border: 1px solid black; padding-left:2px;" colspan="2">
+                                                <strong>Operational and Monitoring Service for Brackish Reverse Osmosis Plant Capacity 970 CMD consist of :<br />
+                                                </strong>- Antiscalant for RO Membrance<br />
+- pH Adjustment for RO Product<br />
+- Disinfectant for RO Product<br />
+- Cleaning agent Acid<br />
+- Cleaning agent Alkali<br />
+- Catridge filter for feed and CIP<br />
+- Cleaning Membrance Specialist<br />
+- One person operator (6 days a week)<br />
+- Water test every month</td>
+                <td style="width: 10.9648%; text-align: center; vertical-align : top; border: 1px solid black;">Per month</td>
+                <td style="width: 39.0316%; text-align: right; vertical-align : top; border: 1px solid black;">
+                    <strong>43.000.000,-</strong>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 4.14635%; height: 36px; border: 1px solid black; border-bottom: 0px solid transparent; border-right: 0px solid transparent;"></td>
+                <td style="width: 55.521%; height: 36px; text-align: right; border: 1px solid black; border-bottom: 0px solid transparent; border-left: 0px solid transparent;" colspan="3">
+                    <strong>TOTAL</strong>
+                </td>
+                <td style="width: 39.0316%; height: 36px; text-align: right; border: 1px solid black; border-bottom: 0px solid transparent;">
+                    <strong>43.000.000,-</strong>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 26.4244%; border: 1px solid black; border-bottom: 0px solid transparent; border-top: 0px solid transparent; padding-left:2px; padding-top:30px;" colspan="2">Operations and Maintenance Supports</td>
+                <td style="width: 72.2745%; border: 1px solid black; border-bottom: 0px solid transparent; border-top: 0px solid transparent; padding-left:2px; padding-top:30px;" colspan="3">- Supervisor (Zulpian and Ahmad Sabri)<br />
+- Office : Perumahan Puri Kampia Jl. Soka I no. A3</td>
+            </tr>
+            <tr>
+                <td style="width: 26.4244%; border: 1px solid black; border-bottom: 0px solid transparent; border-top: 0px solid transparent; padding-left:2px; padding-top:30px;" colspan="2">Terms and Conditions</td>
+                <td style="width: 72.2745%; border: 1px solid black; border-bottom: 0px solid transparent; border-top: 0px solid transparent; padding-left:2px; padding-top:30px;" colspan="3">- Quotation Validity : 1 weeks<br />
+- Delivery Point : Shangri - La, The Maj, Nusa Dua<br />
+- Price : Include PPH 23, exclude VAT-10%<br />
+        <br />
+- Payment Terms : 10 days after Invoice received</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+
+<tr>
+<td style="text-align: left; width: 99.9997%;" colspan="7">For further information, please do not hesitate to contact us.</td>
+</tr>
+<tr>
+<td style="text-align: left; width: 99.9997%; padding-top:20px;" colspan="7"></td>
+</tr>
+<tr>
+<td style="text-align: center; width: 49.6196%;" colspan="3">Best Regards,<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<span style="text-decoration: underline;">
+<strong>(I Ketut Wiguna)<br />
+</strong>
+</span>President Director</td>
+<td style="text-align: center; width: 8.52077%;"></td>
+<td style="text-align: center; width: 41.8592%;" colspan="3">Approved by,<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<span style="text-decoration: underline;">
+<strong>(....................................)<br />
+</strong>
+</span>......................................
+</td>
+</tr>
+</tbody>
+</table>
+
+<div class="footer o_standard_footer">
+<div class="text-center" style="font-size : 10px important!; opacity:0.25;">
+<div>
+<strong>PT. GAPURA LIQUA SOLUTIONS</strong>
+<br/>
+                                Jl Cihampelas No. 214A, Bandung 40131, West Java, Indonesia
+</div>
+<ul class="list-inline mb4">
+<li t-if="doc.company_id.phone" class="list-inline-item">p. <span t-field="doc.company_id.phone"/>
+</li>
+<li t-if="doc.company_id.phone" class="list-inline-item">f. <span t-field="doc.company_id.phone"/>
+</li>
+<li t-if="doc.company_id.email" class="list-inline-item">e. <span t-field="doc.company_id.email"/>
+</li>
+<li t-if="doc.company_id.website" class="list-inline-item">
+<span t-field="doc.company_id.website"/>
+</li>
+<li t-if="doc.company_id.vat" class="list-inline-item">
+<t t-esc="(doc.company_id.country_id.vat_label or 'Tax ID').replace(' ','\N{NO-BREAK SPACE}')"/>
+:<span t-esc="company_id.vat.replace(' ','\N{NO-BREAK SPACE}')"/>
+</li>
+</ul>
+<div name="financial_infos">
+<span t-field="doc.company_id.report_footer"/>
+</div>
+</div>
+</div>
+</t>
+</div>
+</t>
+</template>
+</odoo>
