@@ -44,6 +44,27 @@ class CostSheet(models.Model):
     civil_work_line_ids = fields.One2many('civil.work', 'cost_sheet_id', string='Civil Work',copy=True)
     ga_project_line_ids = fields.One2many('ga.project', 'cost_sheet_id',copy=True)
     waranty_line_ids = fields.One2many('waranty.waranty', 'cost_sheet_id',copy=True)
+    ion_exchange_line_ids = fields.One2many('ion.exchange.package', 'cost_sheet_id',copy=True)
+    media_filter_line_ids = fields.One2many('media.filter.package', 'cost_sheet_id',copy=True)
+    carbon_filter_line_ids = fields.One2many('carbon.filter.package', 'cost_sheet_id',copy=True)
+    softener_line_ids = fields.One2many('softener.package', 'cost_sheet_id',copy=True)
+    electrode_ionization_line_ids = fields.One2many('electrodeionization.package', 'cost_sheet_id',copy=True)
+    product_tank_line_ids = fields.One2many('product.tank.package', 'cost_sheet_id',copy=True)
+    demin_tank_line_ids = fields.One2many('demin.tank.package', 'cost_sheet_id',copy=True)
+    brine_line_ids = fields.One2many('brine.package', 'cost_sheet_id',copy=True)
+    sludge_dewatering_line_ids = fields.One2many('sludge.dewatering.package', 'cost_sheet_id',copy=True)
+    interconnecting_line_ids = fields.One2many('interconnecting.package', 'cost_sheet_id',copy=True)
+    major_pumps_line_ids = fields.One2many('major.pumps.package', 'cost_sheet_id',copy=True)
+    uv_line_ids = fields.One2many('uv.package', 'cost_sheet_id',copy=True)
+    chemical_line_ids = fields.One2many('chemical.package', 'cost_sheet_id',copy=True)
+    cip_line_ids = fields.One2many('cip.package', 'cost_sheet_id',copy=True)
+    installation_line_ids = fields.One2many('installation.package', 'cost_sheet_id',copy=True)
+    test_commissioning_line_ids = fields.One2many('test.commissioning.package', 'cost_sheet_id',copy=True)
+    cation_exchange_line_ids = fields.One2many('cation.exchange.package', 'cost_sheet_id',copy=True)
+    anion_exchange_line_ids = fields.One2many('anion.exchange.package', 'cost_sheet_id',copy=True)
+    civil_construction_line_ids = fields.One2many('civil.construction.package', 'cost_sheet_id',copy=True)
+    fbr_line_ids = fields.One2many('fbr.package', 'cost_sheet_id',copy=True)
+
       
     
 
@@ -78,6 +99,9 @@ class CostSheet(models.Model):
     offer_margin = fields.Float('Offer Margin',compute="_compute_offer_margin",store=True)
     total_cost_with_margin = fields.Float('Total Cost + Offer Margin',compute="_compute_total_amount",store=True)
     total_cost_round_up = fields.Float('Round Up',compute="_compute_total_amount",store=True)
+    pph_amount = fields.Float('PPh')
+    
+    pph_percent = fields.Float('PPh %',compute="_compute_total_amount",store=True)
     final_profit = fields.Float('Final Profit',compute="_compute_total_amount",store=True)
     final_profit_percent = fields.Float('Final Profit Proportional %',compute="_compute_total_amount",store=True)
     taxes = fields.Float('Taxes',compute="_compute_total_amount",store=True)
@@ -167,7 +191,7 @@ class CostSheet(models.Model):
             this.offer_margin = this.offer_margin_percent * this.sales
             
             
-    @api.depends('offer_margin_percent','offer_margin','sales','project_value','tax_id')
+    @api.depends('offer_margin_percent','offer_margin','sales','project_value','tax_id','pph_amount')
     def _compute_total_amount(self):
         for this in self:
             total_cost = 0.0
@@ -183,11 +207,13 @@ class CostSheet(models.Model):
             final_profit_percent = final_profit/round_up if this.project_value >0 and round_up >0 else 0.0
             taxes = round_up * (this.tax_id.amount/100)
             total_amount = round_up + taxes
+            pph = this.pph_amount/ round_up if this.pph_amount else 0.0
             
             
             this.total_cost_with_margin = total_cost
             this.total_cost_round_up = round_up
             this.final_profit = final_profit
+            this.pph_percent = pph
             this.final_profit_percent = final_profit_percent
             this.taxes = taxes
             this.total_amount = total_amount
@@ -457,8 +483,26 @@ class RabLine(models.Model):
             'cost_sheet_id.civil_work_line_ids.rfq_price',
             'cost_sheet_id.ga_project_line_ids',
             'cost_sheet_id.waranty_line_ids',
-            
-            
+            'cost_sheet_id.ion_exchange_line_ids',
+            'cost_sheet_id.media_filter_line_ids',
+            'cost_sheet_id.carbon_filter_line_ids',
+            'cost_sheet_id.softener_line_ids',
+            'cost_sheet_id.electrode_ionization_line_ids',
+            'cost_sheet_id.product_tank_line_ids',
+            'cost_sheet_id.demin_tank_line_ids',
+            'cost_sheet_id.brine_line_ids',
+            'cost_sheet_id.sludge_dewatering_line_ids',
+            'cost_sheet_id.interconnecting_line_ids',
+            'cost_sheet_id.major_pumps_line_ids',
+            'cost_sheet_id.uv_line_ids',
+            'cost_sheet_id.chemical_line_ids',
+            'cost_sheet_id.cip_line_ids',
+            'cost_sheet_id.installation_line_ids',
+            'cost_sheet_id.test_commissioning_line_ids',
+            'cost_sheet_id.cation_exchange_line_ids',
+            'cost_sheet_id.anion_exchange_line_ids',
+            'cost_sheet_id.civil_construction_line_ids',
+            'cost_sheet_id.fbr_line_ids'
         )
     def _compute_amount(self):
         for this in self:
@@ -482,6 +526,47 @@ class RabLine(models.Model):
                 amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.electrical_package_line_ids])
             elif this.product_id.product_group == 'civil_work':
                 amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.civil_work_line_ids])
+            elif this.product_id.product_group == 'ion_exchange':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.ion_exchange_line_ids])
+            elif this.product_id.product_group == 'media_filter':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.media_filter_line_ids])
+            elif this.product_id.product_group == 'carbon_filter':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.carbon_filter_line_ids])
+            elif this.product_id.product_group == 'softener':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.softener_line_ids])
+            elif this.product_id.product_group == 'electrode-ionization':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.electrodeionization_line_ids])
+            elif this.product_id.product_group == 'product_tank':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.product_tank_line_ids])
+            elif this.product_id.product_group == 'demin_tank':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.demin_tank_line_ids])
+            elif this.product_id.product_group == 'brine':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.brine_line_ids])
+            elif this.product_id.product_group == 'sludge_dewatering':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.sludge_dewatering_line_ids])
+            elif this.product_id.product_group == 'interconnecting':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.interconnecting_line_ids])
+            elif this.product_id.product_group == 'major_pumps':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.major_pumps_line_ids])
+            elif this.product_id.product_group == 'uv':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.uv_line_ids])
+            elif this.product_id.product_group == 'chemical':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.chemical_line_ids])
+            elif this.product_id.product_group == 'cip':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.cip_line_ids])
+            elif this.product_id.product_group == 'installation':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.installation_line_ids])
+            elif this.product_id.product_group == 'test_commissioning':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.test_commissioning_line_ids])
+            elif this.product_id.product_group == 'cation_exchange':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.cation_exchange_line_ids])
+            elif this.product_id.product_group == 'anion_exchange':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.anion_exchange_line_ids])
+            elif this.product_id.product_group == 'civil_construction':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.civil_construction_line_ids])
+            elif this.product_id.product_group == 'fbr':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.fbr_line_ids])
+
             # elif this.product_id.product_group == 'ga_project':
             #     amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.ga_project_line_ids])
             # elif this.product_id.product_group == 'waranty':
@@ -496,224 +581,195 @@ class RabLine(models.Model):
             pro_percent = 0.0
             pro_percent = this.price_unit / sum([(i.price_unit) for i in this.cost_sheet_id.rab_line_ids]) if this.price_unit > 0 else 0.0
             this.propotional_percent = pro_percent
-            
+    
+    def _prepare_record_line(self,rab,component,display=False):
+        res = []
+        res.append({
+            'cost_sheet_id': rab.cost_sheet_id.id,
+            'name': rab.product_id.name,
+            'display_type': 'line_section',
+            'rab_line_id': rab.id
+        })
+        for bom in component:
+            res.append({
+                'cost_sheet_id': rab.cost_sheet_id.id,
+                'display_type': False,
+                'product_id': bom.product_id.id,
+                'name': bom.product_id.display_name,
+                'product_qty': bom.product_qty,
+                'uom_id' : bom.product_uom_id.id,
+                'existing_price': bom.product_id.list_price,
+                'rfq_price' : bom.product_id.list_price,
+                'rab_line_id': rab.id
+            })
+        return res
+        
              
     
     @api.model
     def create(self, vals):
         res = super(RabLine, self).create(vals)
-        data = []
+        component_line = False
         if not res.cost_sheet_id.revisied:
             if res.product_id.product_group == 'general_work':
                 if res.product_id.bom_ids:
-                    data.append({
-                    'cost_sheet_id': res.cost_sheet_id.id,
-                    'name': res.product_id.name,
-                    'display_type': 'line_section',
-                    'rab_line_id': res.id
-                    })
-                    for bom in res.product_id.bom_ids[0].rab_component_line_ids:
-                        data.append({
-                            'cost_sheet_id': res.cost_sheet_id.id,
-                            'display_type': False,
-                            'product_id': bom.product_id.id,
-                            'name': bom.product_id.display_name,
-                            'product_qty': bom.product_qty,
-                            'uom_id' : bom.product_uom_id.id,
-                            'existing_price': bom.product_id.list_price,
-                            'rfq_price' : bom.product_id.list_price,
-                            'rab_line_id': res.id
-                        })            
-                    res.cost_sheet_id.general_work_line_ids.create(data)
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.general_work_line_ids.create(self._prepare_record_line(res,component_line))
             elif res.product_id.product_group == 'intake_package':
                 if res.product_id.bom_ids:
-                    data.append({
-                    'cost_sheet_id': res.cost_sheet_id.id,
-                    'name': res.product_id.name,
-                    'display_type': 'line_section',
-                    'rab_line_id': res.id
-                    })
-                    for bom in res.product_id.bom_ids[0].rab_component_line_ids:
-                        data.append({
-                            'cost_sheet_id': res.cost_sheet_id.id,
-                            'display_type': False,
-                            'product_id': bom.product_id.id,
-                            'name': bom.product_id.display_name,
-                            'product_qty': bom.product_qty,
-                            'uom_id' : bom.product_uom_id.id,
-                            'existing_price': bom.product_id.list_price,
-                            'rfq_price' : bom.product_id.list_price,
-                            'rab_line_id': res.id
-                        })   
-                    res.cost_sheet_id.intake_package_line_ids.create(data)         
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.intake_package_line_ids.create(self._prepare_record_line(res,component_line))         
             elif res.product_id.product_group == 'pretreatment_package':
                 if res.product_id.bom_ids:
-                    data.append({
-                    'cost_sheet_id': res.cost_sheet_id.id,
-                    'name': res.product_id.name,
-                    'display_type': 'line_section',
-                    'rab_line_id': res.id
-                    })
-                    for bom in res.product_id.bom_ids[0].rab_component_line_ids:
-                        data.append({
-                            'cost_sheet_id': res.cost_sheet_id.id,
-                            'display_type': False,
-                            'product_id': bom.product_id.id,
-                            'name': bom.product_id.display_name,
-                            'product_qty': bom.product_qty,
-                            'uom_id' : bom.product_uom_id.id,
-                            'existing_price': bom.product_id.list_price,
-                            'rfq_price' : bom.product_id.list_price,
-                            'rab_line_id': res.id
-                        })   
-                    res.cost_sheet_id.pretreatment_package_line_ids.create(data)         
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.pretreatment_package_line_ids.create(self._prepare_record_line(res,component_line))         
             elif res.product_id.product_group == 'swro_package':
                 if res.product_id.bom_ids:
-                    data.append({
-                    'cost_sheet_id': res.cost_sheet_id.id,
-                    'name': res.product_id.name,
-                    'display_type': 'line_section',
-                    'rab_line_id': res.id
-                    })
-                    for bom in res.product_id.bom_ids[0].rab_component_line_ids:
-                        data.append({
-                            'cost_sheet_id': res.cost_sheet_id.id,
-                            'display_type': False,
-                            'product_id': bom.product_id.id,
-                            'name': bom.product_id.display_name,
-                            'product_qty': bom.product_qty,
-                            'uom_id' : bom.product_uom_id.id,
-                            'existing_price': bom.product_id.list_price,
-                            'rfq_price' : bom.product_id.list_price,
-                            'rab_line_id': res.id
-                        })   
-                    res.cost_sheet_id.swro_package_line_ids.create(data)         
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.swro_package_line_ids.create(self._prepare_record_line(res,component_line))         
             elif res.product_id.product_group == 'brine_injection_package':
                 if res.product_id.bom_ids:
-                    data.append({
-                    'cost_sheet_id': res.cost_sheet_id.id,
-                    'name': res.product_id.name,
-                    'display_type': 'line_section',
-                    'rab_line_id': res.id
-                    })
-                    for bom in res.product_id.bom_ids[0].rab_component_line_ids:
-                        data.append({
-                            'cost_sheet_id': res.cost_sheet_id.id,
-                            'display_type': False,
-                            'product_id': bom.product_id.id,
-                            'name': bom.product_id.display_name,
-                            'product_qty': bom.product_qty,
-                            'uom_id' : bom.product_uom_id.id,
-                            'existing_price': bom.product_id.list_price,
-                            'rfq_price' : bom.product_id.list_price,
-                            'rab_line_id': res.id
-                        })   
-                    res.cost_sheet_id.brine_injection_package_line_ids.create(data)         
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.brine_injection_package_line_ids.create(self._prepare_record_line(res,component_line))         
             elif res.product_id.product_group == 'product_package':
                 if res.product_id.bom_ids:
-                    data.append({
-                    'cost_sheet_id': res.cost_sheet_id.id,
-                    'name': res.product_id.name,
-                    'display_type': 'line_section',
-                    'rab_line_id': res.id
-                    })
-                    for bom in res.product_id.bom_ids[0].rab_component_line_ids:
-                        data.append({
-                            'cost_sheet_id': res.cost_sheet_id.id,
-                            'display_type': False,
-                            'product_id': bom.product_id.id,
-                            'name': bom.product_id.display_name,
-                            'product_qty': bom.product_qty,
-                            'uom_id' : bom.product_uom_id.id,
-                            'existing_price': bom.product_id.list_price,
-                            'rfq_price' : bom.product_id.list_price,
-                            'rab_line_id': res.id
-                        })   
-                    res.cost_sheet_id.product_package_line_ids.create(data)         
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.product_package_line_ids.create(self._prepare_record_line(res,component_line))         
             elif res.product_id.product_group == 'electrical_package':
                 if res.product_id.bom_ids:
-                    data.append({
-                    'cost_sheet_id': res.cost_sheet_id.id,
-                    'name': res.product_id.name,
-                    'display_type': 'line_section',
-                    'rab_line_id': res.id
-                    })
-                    for bom in res.product_id.bom_ids[0].rab_component_line_ids:
-                        data.append({
-                            'cost_sheet_id': res.cost_sheet_id.id,
-                            'display_type': False,
-                            'product_id': bom.product_id.id,
-                            'name': bom.product_id.display_name,
-                            'product_qty': bom.product_qty,
-                            'uom_id' : bom.product_uom_id.id,
-                            'existing_price': bom.product_id.list_price,
-                            'rfq_price' : bom.product_id.list_price,
-                            'rab_line_id': res.id
-                        })   
-                    res.cost_sheet_id.electrical_package_line_ids.create(data)         
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.electrical_package_line_ids.create(self._prepare_record_line(res,component_line))         
             elif res.product_id.product_group == 'civil_work':
                 if res.product_id.bom_ids:
-                    data.append({
-                    'cost_sheet_id': res.cost_sheet_id.id,
-                    'name': res.product_id.name,
-                    'display_type': 'line_section',
-                    'rab_line_id': res.id
-                    })
-                    for bom in res.product_id.bom_ids[0].rab_component_line_ids:
-                        data.append({
-                            'cost_sheet_id': res.cost_sheet_id.id,
-                            'display_type': False,
-                            'product_id': bom.product_id.id,
-                            'name': bom.product_id.display_name,
-                            'product_qty': bom.product_qty,
-                            'uom_id' : bom.product_uom_id.id,
-                            'existing_price': bom.product_id.list_price,
-                            'rfq_price' : bom.product_id.list_price,
-                            'rab_line_id': res.id
-                        })   
-                    res.cost_sheet_id.civil_work_line_ids.create(data)         
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.civil_work_line_ids.create(self._prepare_record_line(res,component_line))
+            elif res.product_id.product_group == 'ion_exchange':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.ion_exchange_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'media_filter':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.media_filter_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'carbon_filter':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.carbon_filter_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'softener':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.softener_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'electrode-ionization':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.electrodeionization_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'product_tank':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.product_tank_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'demin_tank':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.demin_tank_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'brine':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.brine_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'sludge_dewatering':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.sludge_dewatering_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'interconnecting':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.interconnecting_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'major_pumps':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.major_pumps_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'uv':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.uv_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'chemical':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.chemical_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'cip':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.cip_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'installation':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.installation_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'test_commissioning':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.test_commissioning_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'cation_exchange':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.cation_exchange_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'anion_exchange':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.anion_exchange_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'civil_construction':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.civil_construction_line_ids.create(self._prepare_record_line(res,component_line))    
+    
+
+            elif res.product_id.product_group == 'fbr':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.fbr_line_ids.create(self._prepare_record_line(res,component_line))    
+
             elif res.product_id.product_group == 'ga_project':
                 if res.product_id.bom_ids:
-                    data.append({
-                    'cost_sheet_id': res.cost_sheet_id.id,
-                    'name': res.product_id.name,
-                    'display_type': 'line_section',
-                    'rab_line_id': res.id
-                    })
-                    for bom in res.product_id.bom_ids[0].rab_component_line_ids:
-                        data.append({
-                            'cost_sheet_id': res.cost_sheet_id.id,
-                            'display_type': False,
-                            'product_id': bom.product_id.id,
-                            'name': bom.product_id.display_name,
-                            'product_qty': bom.product_qty,
-                            'uom_id' : bom.product_uom_id.id,
-                            'existing_price': bom.product_id.list_price,
-                            'rfq_price' : bom.product_id.list_price,
-                            'rab_line_id': res.id
-                        })   
-                    res.cost_sheet_id.ga_project_line_ids.create(data)         
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.ga_project_line_ids.create(self._prepare_record_line(res,component_line))         
             elif res.product_id.product_group == 'waranty':
                 if res.product_id.bom_ids:
-                    data.append({
-                    'cost_sheet_id': res.cost_sheet_id.id,
-                    'name': res.product_id.name,
-                    'display_type': 'line_section',
-                    'rab_line_id': res.id
-                    })
-                    for bom in res.product_id.bom_ids[0].rab_component_line_ids:
-                        data.append({
-                            'cost_sheet_id': res.cost_sheet_id.id,
-                            'display_type': False,
-                            'product_id': bom.product_id.id,
-                            'name': bom.product_id.display_name,
-                            'product_qty': bom.product_qty,
-                            'uom_id' : bom.product_uom_id.id,
-                            'existing_price': bom.product_id.list_price,
-                            'rfq_price' : bom.product_id.list_price,
-                            'rab_line_id': res.id
-                        })   
-                    res.cost_sheet_id.waranty_line_ids.create(data)    
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.waranty_line_ids.create(self._prepare_record_line(res,component_line))    
         else:
             return res     
         return res 
@@ -1559,6 +1615,948 @@ class LPROPackage(models.Model):
             total = 0.0
             total = this.product_qty * this.rfq_price
             this.total_price = total
+            
+
+class IonExchangePackage(models.Model):
+    _name = 'ion.exchange.package'
+    _description = 'Ion Exchange Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class MediaFilterPackage(models.Model):
+    _name = 'media.filter.package'
+    _description = 'Media Filter Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class CarbonFilterPackage(models.Model):
+    _name = 'carbon.filter.package'
+    _description = 'Carbon Filter Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class SoftenerPackage(models.Model):
+    _name = 'softener.package'
+    _description = 'Softener Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class ElectrodeIonizationPackage(models.Model):
+    _name = 'electrodeionization.package'
+    _description = 'Electrode-Ionization Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class ProductTankPackage(models.Model):
+    _name = 'product.tank.package'
+    _description = 'Product Tank Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class DeminTankPackage(models.Model):
+    _name = 'demin.tank.package'
+    _description = 'Demin Tank Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class BrinePackage(models.Model):
+    _name = 'brine.package'
+    _description = 'Brine Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class SludgeDewateringPackage(models.Model):
+    _name = 'sludge.dewatering.package'
+    _description = 'Sludge Dewatering Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class InterconnectingPackage(models.Model):
+    _name = 'interconnecting.package'
+    _description = 'Interconnecting Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class MajorPumpsPackage(models.Model):
+    _name = 'major.pumps.package'
+    _description = 'Major Pumps Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class UvPackage(models.Model):
+    _name = 'uv.package'
+    _description = 'Uv Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class ChemicalPackage(models.Model):
+    _name = 'chemical.package'
+    _description = 'Chemical Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class CipPackage(models.Model):
+    _name = 'cip.package'
+    _description = 'Cip Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class InstallationPackage(models.Model):
+    _name = 'installation.package'
+    _description = 'Installation Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class TestCommissioningPackage(models.Model):
+    _name = 'test.commissioning.package'
+    _description = 'Test Commissioning Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class CationExchangePackage(models.Model):
+    _name = 'cation.exchange.package'
+    _description = 'Cation Exchange Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class AnionExchangePackage(models.Model):
+    _name = 'anion.exchange.package'
+    _description = 'Anion Exchange Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class CivilConstructionPackage(models.Model):
+    _name = 'civil.construction.package'
+    _description = 'Civil Construction Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+class FbrPackage(models.Model):
+    _name = 'fbr.package'
+    _description = 'Fbr Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price')
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
     
     
 class GaProject(models.Model):
