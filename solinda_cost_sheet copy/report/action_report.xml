@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="action_report_cost_sheet" model="ir.actions.report">
+            <field name="name">RAB Report</field>
+            <field name="model">cost.sheet</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">solinda_cost_sheet.report_costsheet</field>
+            <field name="report_file">solinda_cost_sheet.rab_report_template</field>
+            <field name="print_report_name">'%s' % object.name</field>
+            <field name="binding_model_id" ref="model_cost_sheet"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_rfq_custom" model="ir.actions.report">
+            <field name="name">RFQ Report</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">solinda_cost_sheet.report_rfq</field>
+            <field name="report_file">solinda_cost_sheet.report_rfq</field>
+            <field name="print_report_name">'Request for Quotation - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="purchase.action_report_purchase_order" model="ir.actions.report">
+            <field name="report_type">py3o</field>
+            <field name="py3o_filetype">odt</field>
+            <field name="module">purchase_report_py3o</field>
+            <field name="py3o_template_fallback">purchase_order.odt</field>
+            <!--
+    <field name="py3o_server_id" ref="local_py3o_server"/>
+    <field name="py3o_filetype">pdf</field>
+    <field name="print_report_name">object.name + '-' + object.commercial_partner_id.name.replace(' ', '_') + '.pdf'</field>
+    -->
+        </record>
+
+
+
+    </data>
+
+
+</odoo>

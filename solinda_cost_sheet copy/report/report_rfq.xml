@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_rfq">
+        <t t-call="web.html_container">
+            <div class="header">
+                <div>
+                    <center>
+                        <h4>REQUEST FOR QUOTATION</h4>
+                    </center>
+                </div>
+                <div class="container" style="border: 1px solid black;height:250px">
+                    <table class="table table-borderless" style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 8.97086%;">To</td>
+                                <td style="width: 43.2149%;word-wrap: break-word;" rowspan="2">:
+                                    <t t-esc="docs.partner_id.name"/>
+                                    <t t-esc="docs.partner_id.street"/>
+                                    <t t-esc="docs.partner_id.state_id.name"/>
+                                    <t t-esc="docs.partner_id.zip"/>
+
+                                </td>
+                                <td style="width: 5.70355%;"></td>
+                                <td style="width: 5.70355%;"></td>
+                                <td style="width: 11.4071%;">RFQ No</td>
+                                <td style="width: 25%;">: 
+                                    <t t-esc="docs.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 8.97086%;"></td>
+                                <td style="width: 5.70355%;"></td>
+                                <td style="width: 5.70355%;"></td>
+                                <td style="width: 11.4071%;">Date</td>
+                                <td style="width: 25%;">:
+                                    <t t-esc="docs.date_planned.date()"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 8.97086%;">Tel</td>
+                                <td style="width: 43.2149%;">:
+                                    <t t-esc="docs.partner_id.phone"/>
+                                </td>
+                                <td style="width: 5.70355%;"></td>
+                                <td style="width: 5.70355%;"></td>
+                                <td style="width: 11.4071%;"></td>
+                                <td style="width: 25%;"></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 8.97086%;">Email</td>
+                                <td style="width: 43.2149%;">:
+                                    <t t-esc="docs.partner_id.email"/>
+                                </td>
+                                <td style="width: 5.70355%;"></td>
+                                <td style="width: 5.70355%;"></td>
+                                <td style="width: 11.4071%;"></td>
+                                <td style="width: 25%;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>Dear </p>
+                <p>Warm greeting from PT. Gapura Liqua Solutions</p>
+                <p>In refer to our production, herewith we are requesting you a quotation for these followoing items. The description are :</p>
+                <table class="table table-bordered" style="width: 100%;">
+                    <thead>
+                        <tr style="height: 18px;">
+                            <td style="width: 1.82149%; height: 18px; text-align: center;">No</td>
+                            <td style="width: 12.8529%; height: 18px; text-align: center;">Code/ Spec</td>
+                            <td style="width: 11.4071%; height: 18px; text-align: center;">Description</td>
+                            <td style="width: 6.25%; text-align: center;">Unit</td>
+                            <td style="width: 6.25%; text-align: center;">QTY</td>
+                            <td style="width: 12.5%; height: 18px; text-align: center;">Price</td>
+
+                        </tr>
+                    </thead>
+                    <tbody t-foreach="docs.order_line" t-as="line">
+                        <t t-set="no" t-value="1"/>
+                        <tr style="height: 18px;">
+                            <td style="width: 1.82149%; height: 18px;">
+                                <t t-esc="no"/>
+                            </td>
+                            <td style="width: 12.8529%; height: 18px;"></td>
+                            <td style="width: 11.4071%; height: 18px;">
+                                <t t-esc="line.name"/>
+                            </td>
+                            <td style="width: 6.25%;">
+
+                                <t t-esc="line.product_uom.name"/>
+                            </td>
+                            <td style="width: 6.25%;">
+                                <t t-esc="line.product_qty"/>
+                            </td>
+                            <td style="width: 12.5%; height: 18px;">
+                                <t t-esc="line.price_unit"/>
+                            </td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+
+        </t>
+
+    </template>
+
+</odoo>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="view_purchase_requisition_form_cost_sheet_inherit_purchase_requisition" model="ir.ui.view">
+            <field name="name">purchase.requisition.view.form.inherit</field>
+            <field name="model">purchase.requisition</field>
+            <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+            <field name="arch" type="xml">
+                <!-- <field name="user_id" position="before">
+                    <field name="type" invisible="1"/>
+                    <field name="crm_id" attrs="{'invisible': [('type','!=','rap')]}"/>
+                </field> -->
+
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='price_unit']" position="before">
+                    <field name="top" optional="show" string="ToP" />
+                    <field name="delivery_time" optional="show" string="Del.Time" />
+                    <field name="notes" optional="show" />
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <!-- 
+        <record id="cost_sheet_rap_plan_action" model="ir.actions.act_window">
+            <field name="name">RAP</field>
+            <field name="res_model">purchase.requisition</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record> -->
+
+
+
+
+    </data>
+
+
+</odoo>
