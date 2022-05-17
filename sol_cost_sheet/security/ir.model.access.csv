@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+sol_cost_sheet.access_cost_sheet,access_cost_sheet,sol_cost_sheet.model_cost_sheet,base.group_user,1,1,1,1
+sol_cost_sheet.access_costsheet_component,access_costsheet_component,sol_cost_sheet.model_costsheet_component,base.group_user,1,1,1,1

@@ -96,6 +96,861 @@
                                     <div class="oe_clear"/>
                                 </group>
                             </page>
+
+                            <page string="General Work">
+                                <field name="general_work_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Intake Package">
+                                <field name="intake_package_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Pretreatment Package">
+                                <field name="pretreatment_package_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="SWRO Package">
+                                <field name="swro_package_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Brine Injection Package">
+                                <field name="brine_injection_package_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Product Package">
+                                <field name="product_package_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Electrical Package">
+                                <field name="electrical_package_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Civil Work">
+                                <field name="civil_work_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="GA Project">
+                                <field name="ga_project_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Waranty">
+                                <field name="waranty_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Ion Exchange Package">
+                                <field name="ion_exchange_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Media Filter Package">
+                                <field name="media_filter_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Carbon Filter Package">
+                                <field name="carbon_filter_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Softener Package">
+                                <field name="softener_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Electrode-Ionization Package">
+                                <field name="electrode_ionization_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Product Tank Package">
+                                <field name="product_tank_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Demin Tank Package">
+                                <field name="demin_tank_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Brine Package">
+                                <field name="brine_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Sludge Dewatering Package">
+                                <field name="sludge_dewatering_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Interconnecting Package">
+                                <field name="interconnecting_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Major Pumps Package">
+                                <field name="major_pumps_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Uv Package">
+                                <field name="uv_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Chemical Package">
+                                <field name="chemical_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Cip Package">
+                                <field name="cip_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Installation Package">
+                                <field name="installation_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Test Commissioning Package">
+                                <field name="test_commissioning_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Cation Exchange Package">
+                                <field name="cation_exchange_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Anion Exchange Package">
+                                <field name="anion_exchange_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Civil Construction Package">
+                                <field name="civil_construction_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Fbr Package">
+                                <field name="fbr_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" readonly="1" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Other1 Package">
+                                <field name="other1_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Other2 Package">
+                                <field name="other2_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Other3 Package">
+                                <field name="other3_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Other4 Package">
+                                <field name="other4_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
+
+                            <page string="Other5 Package">
+                                <field name="other5_line_ids" widget="section_and_note_one2many">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle" />
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'required': [('display_type','=',False)]}" />
+                                        <field name="name" widget="section_and_note_text" attrs="{'required': [('display_type','!=',False)]}"/>
+                                        <field name="product_qty" />
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="uom_id" />
+                                        <field name="existing_price" />
+                                        <field name="rfq_price" />
+                                        <field name="total_price" sum="Total Price" />
+                                        <field name="note" />
+                                    </tree>
+                                </field>
+                            </page>
+
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">

@@ -50,5 +50,10 @@ class ProductTemplate(models.Model):
         ('anion_exchange', 'Anion Exchange Package'),
         ('civil_construction', 'Civil Construction Package'),
         ('fbr', 'Fbr Package'),
+        ('other1', 'Other1 Package'),
+        ('other2', 'Other2 Package'),
+        ('other3', 'Other3 Package'),
+        ('other4', 'Other4 Package'),
+        ('other5', 'Other5 Package'),
 
     ], string='Product Group')    

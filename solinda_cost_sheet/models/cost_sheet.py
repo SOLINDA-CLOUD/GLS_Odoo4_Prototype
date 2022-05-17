@@ -64,6 +64,11 @@ class CostSheet(models.Model):
     anion_exchange_line_ids = fields.One2many('anion.exchange.package', 'cost_sheet_id',copy=True)
     civil_construction_line_ids = fields.One2many('civil.construction.package', 'cost_sheet_id',copy=True)
     fbr_line_ids = fields.One2many('fbr.package', 'cost_sheet_id',copy=True)
+    other1_line_ids = fields.One2many('other1.package', 'cost_sheet_id',copy=True)
+    other2_line_ids = fields.One2many('other2.package', 'cost_sheet_id',copy=True)
+    other3_line_ids = fields.One2many('other3.package', 'cost_sheet_id',copy=True)
+    other4_line_ids = fields.One2many('other4.package', 'cost_sheet_id',copy=True)
+    other5_line_ids = fields.One2many('other5.package', 'cost_sheet_id',copy=True)
 
       
     
@@ -363,6 +368,7 @@ class RabLine(models.Model):
     _description = 'Rab Line'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -502,7 +508,12 @@ class RabLine(models.Model):
             'cost_sheet_id.cation_exchange_line_ids',
             'cost_sheet_id.anion_exchange_line_ids',
             'cost_sheet_id.civil_construction_line_ids',
-            'cost_sheet_id.fbr_line_ids'
+            'cost_sheet_id.fbr_line_ids',
+            'cost_sheet_id.other1_line_ids',
+            'cost_sheet_id.other2_line_ids',
+            'cost_sheet_id.other3_line_ids',
+            'cost_sheet_id.other4_line_ids',
+            'cost_sheet_id.other5_line_ids',
         )
     def _compute_amount(self):
         for this in self:
@@ -566,6 +577,16 @@ class RabLine(models.Model):
                 amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.civil_construction_line_ids])
             elif this.product_id.product_group == 'fbr':
                 amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.fbr_line_ids])
+            elif this.product_id.product_group == 'other1':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.other1_line_ids])
+            elif this.product_id.product_group == 'other2':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.other2_line_ids])
+            elif this.product_id.product_group == 'other3':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.other3_line_ids])
+            elif this.product_id.product_group == 'other4':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.other4_line_ids])
+            elif this.product_id.product_group == 'other5':
+                amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.other5_line_ids])
 
             # elif this.product_id.product_group == 'ga_project':
             #     amount = sum([(i.product_qty * i.rfq_price) for i in this.cost_sheet_id.ga_project_line_ids])
@@ -761,6 +782,27 @@ class RabLine(models.Model):
                 if res.product_id.bom_ids:
                     component_line = res.product_id.bom_ids[0].rab_component_line_ids
                     res.cost_sheet_id.fbr_line_ids.create(self._prepare_record_line(res,component_line))    
+                    
+            elif res.product_id.product_group == 'other1':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.other1_line_ids.create(self._prepare_record_line(res,component_line))    
+            elif res.product_id.product_group == 'other2':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.other2_line_ids.create(self._prepare_record_line(res,component_line))    
+            elif res.product_id.product_group == 'other3':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.other3_line_ids.create(self._prepare_record_line(res,component_line))    
+            elif res.product_id.product_group == 'other4':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.other4_line_ids.create(self._prepare_record_line(res,component_line))    
+            elif res.product_id.product_group == 'other5':
+                if res.product_id.bom_ids:
+                    component_line = res.product_id.bom_ids[0].rab_component_line_ids
+                    res.cost_sheet_id.other5_line_ids.create(self._prepare_record_line(res,component_line))    
 
             elif res.product_id.product_group == 'ga_project':
                 if res.product_id.bom_ids:
@@ -780,6 +822,7 @@ class GeneralWork(models.Model):
     _description = 'General Work'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -791,7 +834,7 @@ class GeneralWork(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -827,6 +870,7 @@ class IntakePackage(models.Model):
     _description = 'Intake Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -838,7 +882,7 @@ class IntakePackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -874,6 +918,7 @@ class PretreatmentPackage(models.Model):
     
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -885,7 +930,7 @@ class PretreatmentPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -923,6 +968,7 @@ class SwroPackage(models.Model):
     
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -934,7 +980,7 @@ class SwroPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -971,6 +1017,7 @@ class BrineInjectionPackage(models.Model):
     
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -982,7 +1029,7 @@ class BrineInjectionPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1017,6 +1064,7 @@ class ProductPackage(models.Model):
     _description = 'Product Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1028,7 +1076,7 @@ class ProductPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1064,6 +1112,7 @@ class ElectricalPackage(models.Model):
     _description = 'Electrical Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1075,7 +1124,7 @@ class ElectricalPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1111,6 +1160,7 @@ class CivilWork(models.Model):
     
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1122,7 +1172,7 @@ class CivilWork(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1157,6 +1207,7 @@ class AutomaticScreenPackage(models.Model):
     _description = 'Automatic Screen Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1168,7 +1219,7 @@ class AutomaticScreenPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1203,6 +1254,7 @@ class EqualizationTankPackage(models.Model):
     _description = 'Equalization Tank Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1214,7 +1266,7 @@ class EqualizationTankPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1249,6 +1301,7 @@ class DafPackage(models.Model):
     
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1260,7 +1313,7 @@ class DafPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1295,6 +1348,7 @@ class ClarifierPackage(models.Model):
     
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1306,7 +1360,7 @@ class ClarifierPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1343,6 +1397,7 @@ class AerationPackage(models.Model):
         
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1354,7 +1409,7 @@ class AerationPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1389,6 +1444,7 @@ class MbrPackage(models.Model):
     _description = 'MBR Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1400,7 +1456,7 @@ class MbrPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1436,6 +1492,7 @@ class MbbrPackage(models.Model):
     
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1447,7 +1504,7 @@ class MbbrPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1482,6 +1539,7 @@ class BWROPackage(models.Model):
     _description = 'BWRO Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1493,7 +1551,7 @@ class BWROPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1528,6 +1586,7 @@ class UltrafiltrationPackage(models.Model):
     _description = 'Ultrafiltration Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1539,7 +1598,7 @@ class UltrafiltrationPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1575,6 +1634,7 @@ class LPROPackage(models.Model):
     _description = 'LPRO Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1586,7 +1646,7 @@ class LPROPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1622,6 +1682,7 @@ class IonExchangePackage(models.Model):
     _description = 'Ion Exchange Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1633,7 +1694,7 @@ class IonExchangePackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1669,6 +1730,7 @@ class MediaFilterPackage(models.Model):
     _description = 'Media Filter Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1680,7 +1742,7 @@ class MediaFilterPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1716,6 +1778,7 @@ class CarbonFilterPackage(models.Model):
     _description = 'Carbon Filter Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1727,7 +1790,7 @@ class CarbonFilterPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1763,6 +1826,7 @@ class SoftenerPackage(models.Model):
     _description = 'Softener Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1774,7 +1838,7 @@ class SoftenerPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1810,6 +1874,7 @@ class ElectrodeIonizationPackage(models.Model):
     _description = 'Electrode-Ionization Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1821,7 +1886,7 @@ class ElectrodeIonizationPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1857,6 +1922,7 @@ class ProductTankPackage(models.Model):
     _description = 'Product Tank Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1868,7 +1934,7 @@ class ProductTankPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1904,6 +1970,7 @@ class DeminTankPackage(models.Model):
     _description = 'Demin Tank Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1915,7 +1982,7 @@ class DeminTankPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1951,6 +2018,7 @@ class BrinePackage(models.Model):
     _description = 'Brine Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -1962,7 +2030,7 @@ class BrinePackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -1998,6 +2066,7 @@ class SludgeDewateringPackage(models.Model):
     _description = 'Sludge Dewatering Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2009,7 +2078,7 @@ class SludgeDewateringPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2045,6 +2114,7 @@ class InterconnectingPackage(models.Model):
     _description = 'Interconnecting Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2056,7 +2126,7 @@ class InterconnectingPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2092,6 +2162,7 @@ class MajorPumpsPackage(models.Model):
     _description = 'Major Pumps Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2103,7 +2174,7 @@ class MajorPumpsPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2139,6 +2210,7 @@ class UvPackage(models.Model):
     _description = 'Uv Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2150,7 +2222,7 @@ class UvPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2186,6 +2258,7 @@ class ChemicalPackage(models.Model):
     _description = 'Chemical Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2197,7 +2270,7 @@ class ChemicalPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2233,6 +2306,7 @@ class CipPackage(models.Model):
     _description = 'Cip Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2244,7 +2318,7 @@ class CipPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2280,6 +2354,7 @@ class InstallationPackage(models.Model):
     _description = 'Installation Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2291,7 +2366,7 @@ class InstallationPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2327,6 +2402,7 @@ class TestCommissioningPackage(models.Model):
     _description = 'Test Commissioning Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2338,7 +2414,7 @@ class TestCommissioningPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2374,6 +2450,7 @@ class CationExchangePackage(models.Model):
     _description = 'Cation Exchange Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2385,7 +2462,7 @@ class CationExchangePackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2421,6 +2498,7 @@ class AnionExchangePackage(models.Model):
     _description = 'Anion Exchange Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2432,7 +2510,7 @@ class AnionExchangePackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2468,6 +2546,7 @@ class CivilConstructionPackage(models.Model):
     _description = 'Civil Construction Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2479,7 +2558,7 @@ class CivilConstructionPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2515,6 +2594,7 @@ class FbrPackage(models.Model):
     _description = 'Fbr Package'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2526,7 +2606,257 @@ class FbrPackage(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+    
+    
+class Other1Package(models.Model):
+    _name = 'other1.package'
+    _description = 'Other Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price',readonly=True)
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+    
+    
+class Other2Package(models.Model):
+    _name = 'other2.package'
+    _description = 'Other Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price',readonly=True)
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+    
+    
+class Other3Package(models.Model):
+    _name = 'other3.package'
+    _description = 'Other Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price',readonly=True)
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+    
+    
+class Other4Package(models.Model):
+    _name = 'other4.package'
+    _description = 'Other Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price',readonly=True)
+    rfq_price = fields.Float('RFQ Price')
+    total_price = fields.Float(compute='_compute_total_price', string='Total Price')
+    rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        product_lang = self.product_id.with_context(
+            lang=get_lang(self.env, self.partner_id.lang).code,
+            partner_id=self.partner_id.id,
+            company_id=self.env.company.id,
+        )
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+        self.name = name
+        
+        self.rfq_price = self.product_id.list_price
+    
+    @api.depends('product_qty','rfq_price')
+    def _compute_total_price(self):
+        for this in self:
+            total = 0.0
+            total = this.product_qty * this.rfq_price
+            this.total_price = total
+    
+
+    
+    
+class Other5Package(models.Model):
+    _name = 'other5.package'
+    _description = 'Other Package'
+    
+    cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
+    sequence = fields.Integer('Sequence')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', related='cost_sheet_id.partner_id', string='Partner', readonly=True, store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    name = fields.Char('Description')
+    note = fields.Char('Remarks')
+    product_qty = fields.Float('Quantity',default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='UoM')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2564,6 +2894,7 @@ class GaProject(models.Model):
     _description = 'GA Project'
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2575,7 +2906,7 @@ class GaProject(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2612,6 +2943,7 @@ class WarantyWaranty(models.Model):
     
     
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
@@ -2623,7 +2955,7 @@ class WarantyWaranty(models.Model):
     note = fields.Char('Remarks')
     product_qty = fields.Float('Quantity',default=1.0)
     uom_id = fields.Many2one('uom.uom', string='UoM')
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',readonly=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price')
     rab_line_id = fields.Many2one('rab.line', string='RAB Line',ondelete="cascade")
@@ -2662,6 +2994,7 @@ class ProjectRab(models.Model):
     _description = 'Project RAB'
 
     cost_sheet_id = fields.Many2one('cost.sheet', string='Cost Sheet')
+    rap_id = fields.Many2one('rap.rap', string='RAP')
     rab_template_id = fields.Many2one('rab.template', string='RAB Template')
     # project_id = fields.Many2one('project.project', string='Project')
     display_type = fields.Selection([

@@ -1,0 +1,173 @@
+<odoo>
+  <data>
+    <record id="cost_sheet_view_tree" model="ir.ui.view">
+      <field name="name">cost.sheet.view.tree</field>
+      <field name="model">cost.sheet</field>
+      <field name="arch" type="xml">
+        <tree string="">
+          <field name="name" />
+          <field name="crm_id" />
+          <field name="partner_id" />
+
+
+        </tree>
+      </field>
+    </record>
+
+    <record id="cost_sheet_view_form" model="ir.ui.view">
+      <field name="name">cost.sheet.view.form</field>
+      <field name="model">cost.sheet</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <sheet>
+            <group>
+              <field name="name" />
+              <field name="crm_id" />
+              <field name="partner_id" />
+
+            </group>
+            <field name="component_rab_line_ids" context="{'default_cost_sheet_id':id,'default_is_header':True}">
+              <tree>
+                <field name="product_id" />
+                <field name="quantity" />
+                <field name="uom_id" />
+                <field name="existing_price" />
+                <field name="rfq_price" />
+                <field name="remarks" />
+              </tree>
+              <form>
+                <group>
+                  <field name="cost_sheet_id" invisible="0"/>
+                  <field name="product_id" />
+                  <field name="quantity" />
+                  <field name="uom_id" />
+                  <field name="existing_price" />
+                  <field name="rfq_price" />
+                  <field name="remarks" />
+                  <field name="is_header" />
+                  <field name="is_parent" />
+                  <field name="is_child" />
+                </group>
+                <field name="component_rab_header_line_ids" context="{'default_cost_sheet_id': cost_sheet_id}">
+                  <tree>
+                    <field name="component_header_id" />
+                    <field name="component_parent_id" />
+                    <field name="component_id" />
+                    <field name="cost_sheet_id" />
+                    <field name="product_id" />
+                    <field name="quantity" />
+                    <field name="uom_id" />
+                    <field name="existing_price" />
+                    <field name="rfq_price" />
+                    <field name="remarks" />
+                  </tree>
+                  <form>
+                    <group>
+                      <field name="cost_sheet_id" invisible="0"/>
+                      <field name="component_header_id" />
+                      <field name="component_parent_id" />
+                      <field name="component_id" />
+                      <field name="product_id" />
+                      <field name="quantity" />
+                      <field name="uom_id" />
+                      <field name="existing_price" />
+                      <field name="rfq_price" />
+                      <field name="remarks" />
+                      <field name="is_header" />
+                      <field name="is_parent" />
+                      <field name="is_child" />
+                      <field name="component_rab_parent_line_ids" context="{'default_cost_sheet_id': cost_sheet_id}">
+                        <tree>
+                          <field name="component_header_id" />
+                          <field name="component_parent_id" />
+                          <field name="component_id" />
+                          <field name="cost_sheet_id" />
+                          <field name="product_id" />
+                          <field name="quantity" />
+                          <field name="uom_id" />
+                          <field name="existing_price" />
+                          <field name="rfq_price" />
+                          <field name="remarks" />
+                        </tree>
+                        <form>
+                          <group>
+                            <field name="cost_sheet_id" invisible="0"/>
+                            <field name="component_header_id" />
+                            <field name="component_parent_id" />
+                            <field name="component_id" />
+                            <field name="product_id" />
+                            <field name="quantity" />
+                            <field name="uom_id" />
+                            <field name="existing_price" />
+                            <field name="rfq_price" />
+                            <field name="remarks" />
+                            <field name="is_header" />
+                            <field name="is_parent" />
+                            <field name="is_child" />
+                          </group>
+                          <field name="component_rab_line_ids" context="{'default_cost_sheet_id': cost_sheet_id}">
+                            <tree>
+                              <field name="component_header_id" />
+                              <field name="component_parent_id" />
+                              <field name="component_id" />
+                              <field name="cost_sheet_id" />
+                              <field name="product_id" />
+                              <field name="quantity" />
+                              <field name="uom_id" />
+                              <field name="existing_price" />
+                              <field name="rfq_price" />
+                              <field name="remarks" />
+                            </tree>
+                            <form>
+                              <group>
+                                <field name="cost_sheet_id" invisible="0"/>
+                                <field name="component_header_id" />
+                                <field name="component_parent_id" />
+                                <field name="component_id" />
+                                <field name="product_id" />
+                                <field name="quantity" />
+                                <field name="uom_id" />
+                                <field name="existing_price" />
+                                <field name="rfq_price" />
+                                <field name="remarks" />
+                                <field name="is_header" />
+                                <field name="is_parent" />
+                                <field name="is_child" />
+
+
+                              </group>
+                            </form>
+
+                          </field>
+                        </form>
+
+                      </field>
+
+                    </group>
+                  </form>
+
+                </field>
+              </form>
+            </field>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <record id="cost_sheet_action" model="ir.actions.act_window">
+      <field name="name">Cost Sheet</field>
+      <field name="res_model">cost.sheet</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[]</field>
+      <field name="context">{}</field>
+      <field name="help" type="html">
+        <p>
+      Create a new Cost Sheet
+        </p>
+
+      </field>
+    </record>
+
+  </data>
+</odoo>

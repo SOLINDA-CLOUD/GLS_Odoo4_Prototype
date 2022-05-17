@@ -34,9 +34,45 @@ class ProjectProject(models.Model):
                     'uom_id': data.uom_id.id,
                     'rab_price': data.price_unit,
                     'price_unit': data.price_unit,
-                }) for data in self.rab_id.rab_line_ids]
+                }) for data in self.rab_id.rab_line_ids],
 
         })
+        self.rab_id.general_work_line_ids.write({'rap_id':rap.id})
+        self.rab_id.intake_package_line_ids.write({'rap_id':rap.id})
+        self.rab_id.pretreatment_package_line_ids.write({'rap_id':rap.id})
+        self.rab_id.swro_package_line_ids.write({'rap_id':rap.id})
+        self.rab_id.brine_injection_package_line_ids.write({'rap_id':rap.id})
+        self.rab_id.product_package_line_ids.write({'rap_id':rap.id})
+        self.rab_id.electrical_package_line_ids.write({'rap_id':rap.id})
+        self.rab_id.civil_work_line_ids.write({'rap_id':rap.id})
+        self.rab_id.ga_project_line_ids.write({'rap_id':rap.id})
+        self.rab_id.waranty_line_ids.write({'rap_id':rap.id})
+        self.rab_id.ion_exchange_line_ids.write({'rap_id':rap.id})
+        self.rab_id.media_filter_line_ids.write({'rap_id':rap.id})
+        self.rab_id.carbon_filter_line_ids.write({'rap_id':rap.id})
+        self.rab_id.softener_line_ids.write({'rap_id':rap.id})
+        self.rab_id.electrode_ionization_line_ids.write({'rap_id':rap.id})
+        self.rab_id.product_tank_line_ids.write({'rap_id':rap.id})
+        self.rab_id.demin_tank_line_ids.write({'rap_id':rap.id})
+        self.rab_id.brine_line_ids.write({'rap_id':rap.id})
+        self.rab_id.sludge_dewatering_line_ids.write({'rap_id':rap.id})
+        self.rab_id.interconnecting_line_ids.write({'rap_id':rap.id})
+        self.rab_id.major_pumps_line_ids.write({'rap_id':rap.id})
+        self.rab_id.uv_line_ids.write({'rap_id':rap.id})
+        self.rab_id.chemical_line_ids.write({'rap_id':rap.id})
+        self.rab_id.cip_line_ids.write({'rap_id':rap.id})
+        self.rab_id.installation_line_ids.write({'rap_id':rap.id})
+        self.rab_id.test_commissioning_line_ids.write({'rap_id':rap.id})
+        self.rab_id.cation_exchange_line_ids.write({'rap_id':rap.id})
+        self.rab_id.anion_exchange_line_ids.write({'rap_id':rap.id})
+        self.rab_id.civil_construction_line_ids.write({'rap_id':rap.id})
+        self.rab_id.fbr_line_ids.write({'rap_id':rap.id})
+        self.rab_id.other1_line_ids.write({'rap_id':rap.id})
+        self.rab_id.other2_line_ids.write({'rap_id':rap.id})
+        self.rab_id.other3_line_ids.write({'rap_id':rap.id})
+        self.rab_id.other4_line_ids.write({'rap_id':rap.id})
+        self.rab_id.other5_line_ids.write({'rap_id':rap.id})
+
         
         self.write({'rap_id':rap.id})
         

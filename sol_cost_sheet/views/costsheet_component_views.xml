@@ -1,0 +1,41 @@
+<odoo>
+  <data>
+    <record id="costsheet_component_view_tree" model="ir.ui.view">
+      <field name="name">costsheet.component.view.tree</field>
+      <field name="model">costsheet.component</field>
+      <field name="arch" type="xml">
+        <tree string="" editable="bottom">
+          <field name="cost_sheet_id" invisible="0"/>
+          <field name="component_header_id" />
+          <field name="component_parent_id" />
+          <field name="component_id" />
+          <field name="product_id" />
+          <field name="quantity" />
+          <field name="uom_id" />
+          <field name="existing_price" />
+          <field name="rfq_price" />
+          <field name="remarks" />
+          <field name="is_header" />
+          <field name="is_parent" />
+          <field name="is_child" />
+
+        </tree>
+      </field>
+    </record>
+
+
+    <record id="costsheet_component_action" model="ir.actions.act_window">
+      <field name="name">Cost Sheet Component</field>
+      <field name="res_model">costsheet.component</field>
+      <field name="view_mode">tree</field>
+      <field name="domain">[]</field>
+      <field name="context">{}</field>
+      <field name="help" type="html">
+        <p>
+        Test
+        </p>
+      </field>
+    </record>
+
+  </data>
+</odoo>

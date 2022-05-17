@@ -33,5 +33,6 @@
         'report/report_quotation_trading.xml',
         'report/report_quotation_turnkey.xml',
     ],
+    'license': 'LGPL-3'
     
 }
