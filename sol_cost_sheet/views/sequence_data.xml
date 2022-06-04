@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="cost_sheet_seq" model="ir.sequence">
+            <field name="name">Cost Sheet Sequence</field>
+            <field name="code">cost.sheet.seq</field>
+            <field name="padding">5</field>
+            <field name="prefix">CS/%(month)s/%(y)s/</field>
+        </record>
+        <record id="rap_seq" model="ir.sequence">
+            <field name="name">RAP Sequence</field>
+            <field name="code">rap.rap</field>
+            <field name="padding">5</field>
+            <field name="prefix">RAP/%(month)s/%(y)s/</field>
+        </record>
+
+
+
+    </data>
+
+
+</odoo>

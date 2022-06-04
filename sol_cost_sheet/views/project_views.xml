@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+        <record id="edit_project_inherit_project" model="ir.ui.view">
+            <field name="name">project.project.view.form.inherit</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+
+                <field name="tag_ids" position="after">
+                    <field name="rab_id" />
+                    <field name="rap_id" readonly="1" />
+                </field>
+                <xpath expr="//header" position="inside">
+
+                    <button string="Create RAP" name="create_rap" attrs="{'invisible':[('rab_id','=',False)]}" type="object"/>
+                    <!-- <button string="Create RAP" name="create_rap" type="object" attrs="{'invisible':[('rab_id','=', False)]}"/> -->
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

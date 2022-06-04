@@ -3,6 +3,7 @@
 
     <menuitem id="cost_sheet_root_menu" name="Cost Sheet" />
     <menuitem id="cost_sheet_menu" name="Cost Sheet" sequence="1" parent="cost_sheet_root_menu" action="cost_sheet_action"/>
-    <menuitem id="cost_sheet_component_menu" name="Cost Sheet Component" sequence="2" parent="cost_sheet_root_menu" action="costsheet_component_action"/>
+    <!-- <menuitem id="cost_sheet_component_menu" name="Cost Sheet Component" sequence="2" parent="cost_sheet_root_menu" action="costsheet_component_action"/> -->
+    <menuitem id="rap_menu" name="RAP" sequence="2" parent="cost_sheet_root_menu" action="cost_sheet_rap_action"/>
 
 </odoo>

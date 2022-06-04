@@ -8,8 +8,6 @@
           <field name="name" />
           <field name="crm_id" />
           <field name="partner_id" />
-
-
         </tree>
       </field>
     </record>
@@ -19,136 +17,153 @@
       <field name="model">cost.sheet</field>
       <field name="arch" type="xml">
         <form string="">
+          <header>
+            <button string="Submit" name="action_submit" states="draft" type="object" class="oe_highlight"/>
+            <button string="Done" name="action_done" states="submit" type="object" class="oe_highlight"/>
+            <button string="Set to Draft" name="action_to_draft" states="done" type="object"/>
+            <!-- <button string="Create Revision" name="create_revision" type="object"/>
+            <button string="Create Purchase Agreement" name="action_create_requisition" type="object" invisible="1"/> -->
+            <field name="state" widget="statusbar" statusbar_visible="draft,submit,done" />
+          </header>
           <sheet>
-            <group>
-              <field name="name" />
-              <field name="crm_id" />
+            <div class="oe_button_box" name="button_box">
+              <button name="action_view_crm" type="object" string="CRM" class="oe_stat_button" icon="fa-handshake-o" attrs="{'invisible':[('state','=','draft')]}"/>
+            </div>
+            <div class="oe_title">
+              <h1>
+                <field name="name" readonly="1"/>
+              </h1>
+            </div>
+            <group col="4">
+              <!-- <field name="crm_id" />
               <field name="partner_id" />
+              <field name="tax_id" /> -->
+              <field name="crm_id" required="1" />
+              <field name="partner_id" />
+              <!-- <field name="rab_template_id" /> -->
+              <field name="date_document" />
+              <field name="tax_id" options="{'no_create':True,'no_quick_create':True}" />
+              <!-- <field name="tax_ids" widget="many2many_tags" /> -->
+              <!-- <field name="margin_type" widget="radio" options="{'horizontal':true}" /> -->
+              <field name="user_id" readonly="1" />
+              <field name="rev" invisible="1" />
+              <field name="revisied" invisible="0" />
 
             </group>
-            <field name="component_rab_line_ids" context="{'default_cost_sheet_id':id,'default_is_header':True}">
-              <tree>
-                <field name="product_id" />
-                <field name="quantity" />
-                <field name="uom_id" />
-                <field name="existing_price" />
-                <field name="rfq_price" />
-                <field name="remarks" />
-              </tree>
-              <form>
-                <group>
-                  <field name="cost_sheet_id" invisible="0"/>
-                  <field name="product_id" />
-                  <field name="quantity" />
-                  <field name="uom_id" />
-                  <field name="existing_price" />
-                  <field name="rfq_price" />
-                  <field name="remarks" />
-                  <field name="is_header" />
-                  <field name="is_parent" />
-                  <field name="is_child" />
-                </group>
-                <field name="component_rab_header_line_ids" context="{'default_cost_sheet_id': cost_sheet_id}">
-                  <tree>
-                    <field name="component_header_id" />
-                    <field name="component_parent_id" />
-                    <field name="component_id" />
-                    <field name="cost_sheet_id" />
+            <notebook>
+              <page string="Category">
+                <field name="category_line_ids">
+                  <tree editable="bottom">
                     <field name="product_id" />
-                    <field name="quantity" />
-                    <field name="uom_id" />
-                    <field name="existing_price" />
-                    <field name="rfq_price" />
-                    <field name="remarks" />
+                    <field name="price" />
+                    <field name="propotional" widget="percentage" sum="propotional" />
+                    <field name="suggested_proposional" />
+                    <field name="input_manual" optional="hide" />
+                    <field name="final_price" />
+                    <field name="final_price_percentage" widget="percentage" />
+                    <button name="action_view_detail" type="object" icon="fa-pencil-square-o" />
+                  </tree>
+                </field>
+                <group name="non_project" class="mb32">
+                  <group string="Non Project" col="2">
+
+                    <field name="ga_project" />
+                    <field name="project_hse" />
+                    <field name="car" />
+                    <field name="financial_cost" string="Financial Cost" />
+                    <field name="bank_guarantee" />
+                    <field name="contigency" />
+                    <field name="waranty" />
+                    <field name="other_price" />
+                  </group>
+                  <group col="1" string="Proportional %">
+
+                    <field name="ga_project_percent" widget="percentage" nolabel="1"/>
+                    <field name="project_hse_percent" widget="percentage" nolabel="1"/>
+                    <field name="car_percent" widget="percentage" nolabel="1" />
+                    <field name="financial_cost_percent" widget="percentage" nolabel="1"/>
+                    <field name="bank_guarantee_percent" widget="percentage" nolabel="1"/>
+                    <field name="contigency_percent" widget="percentage" nolabel="1"/>
+                    <field name="waranty_percent" widget="percentage" nolabel="1" />
+                  </group>
+
+                </group>
+                <group name="note_group" col="6" class="mt-2 mt-md-0">
+                  <group colspan="4">
+                    <field name="note" nolabel="1" placeholder="Terms and conditions..."/>
+                  </group>
+                  <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                    <field name="currency_id" invisible="1" />
+                    <field name="subtotal" />
+                    <field name="subtotal_non_project" />
+                    <field name="project_value" />
+                    <field name="profit" />
+                    <field name="profit_propotional" widget="percentage" />
+                    <field name="sales" />
+                    <field name="offer_margin_percentage" widget="percentage" />
+                    <field name="offer_margin" />
+                    <field name="total_cost_with_margin" />
+                    <field name="total_cost_round_up" />
+                    <field name="pph" />
+                    <field name="pph_percent" widget="percentage" />
+                    <field name="final_profit" />
+                    <field name="final_profit_percent" widget="percentage" />
+                    <field name="taxes" />
+                    <!-- <field name="total_amount" /> -->
+                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                      <label for="total_amount"/>
+                    </div>
+                    <field name="total_amount" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                  </group>
+                  <div class="oe_clear"/>
+                </group>
+              </page>
+              <page string="Component">
+                <field name="component_line_ids">
+                  <tree>
+                    <field name="category_id" />
+                    <field name="product_id" />
                   </tree>
                   <form>
                     <group>
-                      <field name="cost_sheet_id" invisible="0"/>
-                      <field name="component_header_id" />
-                      <field name="component_parent_id" />
-                      <field name="component_id" />
+                      <field name="category_id" />
                       <field name="product_id" />
-                      <field name="quantity" />
-                      <field name="uom_id" />
-                      <field name="existing_price" />
-                      <field name="rfq_price" />
-                      <field name="remarks" />
-                      <field name="is_header" />
-                      <field name="is_parent" />
-                      <field name="is_child" />
-                      <field name="component_rab_parent_line_ids" context="{'default_cost_sheet_id': cost_sheet_id}">
-                        <tree>
-                          <field name="component_header_id" />
-                          <field name="component_parent_id" />
-                          <field name="component_id" />
-                          <field name="cost_sheet_id" />
-                          <field name="product_id" />
-                          <field name="quantity" />
-                          <field name="uom_id" />
-                          <field name="existing_price" />
-                          <field name="rfq_price" />
-                          <field name="remarks" />
-                        </tree>
-                        <form>
-                          <group>
-                            <field name="cost_sheet_id" invisible="0"/>
-                            <field name="component_header_id" />
-                            <field name="component_parent_id" />
-                            <field name="component_id" />
-                            <field name="product_id" />
-                            <field name="quantity" />
-                            <field name="uom_id" />
-                            <field name="existing_price" />
-                            <field name="rfq_price" />
-                            <field name="remarks" />
-                            <field name="is_header" />
-                            <field name="is_parent" />
-                            <field name="is_child" />
-                          </group>
-                          <field name="component_rab_line_ids" context="{'default_cost_sheet_id': cost_sheet_id}">
-                            <tree>
-                              <field name="component_header_id" />
-                              <field name="component_parent_id" />
-                              <field name="component_id" />
-                              <field name="cost_sheet_id" />
-                              <field name="product_id" />
-                              <field name="quantity" />
-                              <field name="uom_id" />
-                              <field name="existing_price" />
-                              <field name="rfq_price" />
-                              <field name="remarks" />
-                            </tree>
-                            <form>
-                              <group>
-                                <field name="cost_sheet_id" invisible="0"/>
-                                <field name="component_header_id" />
-                                <field name="component_parent_id" />
-                                <field name="component_id" />
-                                <field name="product_id" />
-                                <field name="quantity" />
-                                <field name="uom_id" />
-                                <field name="existing_price" />
-                                <field name="rfq_price" />
-                                <field name="remarks" />
-                                <field name="is_header" />
-                                <field name="is_parent" />
-                                <field name="is_child" />
-
-
-                              </group>
-                            </form>
-
-                          </field>
-                        </form>
-
-                      </field>
-
                     </group>
+                    <field name="item_ids" />
                   </form>
-
                 </field>
-              </form>
-            </field>
+              </page>
+
+              <page name="ga_project" string="GA Project">
+                <field name="ga_project_line_ids">
+                  <tree editable="bottom">
+                    <field name="product_id" required="1" />
+                    <field name="product_qty" />
+                    <field name="existing_price" />
+                    <field name="rfq_price" />
+                    <field name="total_price" />
+                    <field name="remarks" />
+
+                  </tree>
+                </field>
+              </page>
+
+              <page name="waranty" string="Waranty">
+                <field name="waranty_line_ids">
+                  <tree editable="bottom">
+                    <field name="product_id" required="1" />
+                    <field name="product_qty" />
+                    <field name="existing_price" />
+                    <field name="rfq_price" />
+                    <field name="total_price" />
+                    <field name="remarks" />
+
+                  </tree>
+                </field>
+              </page>
+
+            </notebook>
+
           </sheet>
         </form>
       </field>
@@ -168,6 +183,65 @@
 
       </field>
     </record>
+
+    <record id="component_component_view_form" model="ir.ui.view">
+      <field name="name">component.component.view.form</field>
+      <field name="model">component.component</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <header>
+            <button string="Get Items" name="get_items" type="object" class="oe_highlight"/>
+          </header>
+          <sheet>
+            <group>
+              <field name="cost_sheet_id" readonly="1" />
+              <field name="category_id" readonly="1" />
+              <field name="product_id" readonly="1" />
+            </group>
+            <field name="item_ids" context="{'default_category_id':parent.category_id}">
+              <tree editable="bottom">
+                <field name="cost_sheet_id" readonly="1" force_save="1" invisible="1" />
+                <field name="category_id" readonly="1" force_save="1" invisible="1" />
+                <field name="product_id" />
+                <field name="product_qty" />
+                <field name="existing_price" />
+                <field name="rfq_price" />
+                <field name="total_price" />
+                <field name="remarks" />
+              </tree>
+            </field>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <!-- RAB Category -->
+
+    <record id="rab_category_view_form" model="ir.ui.view">
+      <field name="name">rab.category.view.form</field>
+      <field name="model">rab.category</field>
+      <field name="arch" type="xml">
+        <form string="" create="0">
+          <sheet>
+            <group>
+              <field name="cost_sheet_id" readonly="1" force_save="1" />
+              <field name="product_id" readonly="1" force_save="1" />
+            </group>
+            <field name="parent_component_line_ids" context="{'default_cost_sheet_id':parent.cost_sheet_id}">
+              <tree editable="bottom">
+                <field name="cost_sheet_id" readonly="1" force_save="1" />
+                <field name="product_id" />
+                <button name="action_view_items" type="object" icon="fa-pencil-square-o" />
+
+              </tree>
+            </field>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
 
   </data>
 </odoo>

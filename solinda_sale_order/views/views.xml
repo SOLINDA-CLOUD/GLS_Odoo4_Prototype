@@ -1,0 +1,36 @@
+<odoo>
+  <data>
+
+    <record id="view_order_form_inherit_sale" model="ir.ui.view">
+      <field name="name">sale.order.view.form.inherit</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+
+
+        <notebook position="inside">
+          <page name="payment_schedule" string="Payment Schedule">
+            <field name="payment_schedule_line_ids">
+              <tree editable="bottom">
+                <!-- <field name="product_id" required="1" /> -->
+                <field name="name" required="1" />
+                <field name="account_id" required="1" />
+                <field name="progress" widget="percentage" required="1" />
+                <field name="bill" widget="percentage" required="1" />
+                <field name="currency_id" invisible="1" />
+                <field name="total_amount" />
+                <button name="create_invoice" type="object" icon="fa-pencil-square-o" />
+
+              </tree>
+            </field>
+            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+              <!-- <field name="tax_totals_json" widget="account-tax-totals-field" nolabel="1" colspan="2"/> -->
+              <field name="amount_total" nolabel="1" colspan="2" />
+            </group>
+            <div class="oe_clear"/>
+          </page>
+        </notebook>
+      </field>
+    </record>
+  </data>
+</odoo>

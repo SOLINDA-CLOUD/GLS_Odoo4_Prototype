@@ -1,3 +1,10 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 sol_cost_sheet.access_cost_sheet,access_cost_sheet,sol_cost_sheet.model_cost_sheet,base.group_user,1,1,1,1
-sol_cost_sheet.access_costsheet_component,access_costsheet_component,sol_cost_sheet.model_costsheet_component,base.group_user,1,1,1,1
+sol_cost_sheet.access_component_component,access_component_component,sol_cost_sheet.model_component_component,base.group_user,1,1,1,1
+sol_cost_sheet.access_item_item,access_item_item,sol_cost_sheet.model_item_item,base.group_user,1,1,1,1
+sol_cost_sheet.access_rab_category,access_rab_category,sol_cost_sheet.model_rab_category,base.group_user,1,1,1,1
+sol_cost_sheet.access_cost_sheet_component,access_cost_sheet_component,sol_cost_sheet.model_cost_sheet_component,base.group_user,1,1,1,1
+sol_cost_sheet.access_ga_project,access_ga_project,sol_cost_sheet.model_ga_project,base.group_user,1,1,1,1
+sol_cost_sheet.access_waranty_waranty,access_waranty_waranty,sol_cost_sheet.model_waranty_waranty,base.group_user,1,1,1,1
+sol_cost_sheet.access_rap_category,access_rap_category,sol_cost_sheet.model_rap_category,base.group_user,1,1,1,1
+sol_cost_sheet.access_rap_rap,access_rap_rap,sol_cost_sheet.model_rap_rap,base.group_user,1,1,1,1

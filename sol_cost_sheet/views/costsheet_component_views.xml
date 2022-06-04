@@ -1,32 +1,61 @@
 <odoo>
   <data>
     <record id="costsheet_component_view_tree" model="ir.ui.view">
-      <field name="name">costsheet.component.view.tree</field>
-      <field name="model">costsheet.component</field>
+      <field name="name">item.item.view.tree</field>
+      <field name="model">item.item</field>
       <field name="arch" type="xml">
         <tree string="" editable="bottom">
-          <field name="cost_sheet_id" invisible="0"/>
-          <field name="component_header_id" />
-          <field name="component_parent_id" />
-          <field name="component_id" />
+          <field name="cost_sheet_id" colspan="4" />
           <field name="product_id" />
-          <field name="quantity" />
-          <field name="uom_id" />
+          <field name="category_id" />
+          <field name="component_id" />
+          <field name="product_qty" />
           <field name="existing_price" />
           <field name="rfq_price" />
-          <field name="remarks" />
-          <field name="is_header" />
-          <field name="is_parent" />
-          <field name="is_child" />
-
+          <field name="total_price" />
         </tree>
       </field>
     </record>
 
 
+    <!-- View RAP Component -->
+
+    <record id="rap_component_view_tree" model="ir.ui.view">
+      <field name="name">rap.item.item.view.tree</field>
+      <field name="model">item.item</field>
+      <field name="arch" type="xml">
+        <!-- <tree string="" editable="bottom"> -->
+        <tree create="0" editable="bottom" decoration-success="qty_on_hand &lt; product_qty">
+          <!-- <field name="cost_sheet_id" /> -->
+          <field name="rap_id" readonly="1" />
+          <field name="product_id" readonly="1" />
+          <field name="product_type" readonly="1" />
+          <field name="qty_on_hand" readonly="1" />
+          <field name="product_qty" readonly="1" />
+          <field name="category_id" readonly="1" />
+          <field name="component_id" readonly="1" />
+          <!-- <field name="existing_price" /> -->
+          <!-- <field name="rfq_price" /> -->
+          <field name="total_price" string="RAB Price" />
+          <field name="rap_price" />
+          <button name="view_item_in_purchase" type="object" icon="fa-pencil-square-o" />
+        </tree>
+      </field>
+    </record>
+
+    <record id="action_create_purchase_request" model="ir.actions.server">
+      <field name="name">Create Purchase Request</field>
+      <field name="type">ir.actions.server</field>
+      <field name="state">code</field>
+      <field name="code">action = records.create_purchase_request()</field>
+      <field name="binding_model_id" ref="model_item_item"/>
+      <field name="model_id" ref="model_item_item"/>
+    </record>
+
+
     <record id="costsheet_component_action" model="ir.actions.act_window">
       <field name="name">Cost Sheet Component</field>
-      <field name="res_model">costsheet.component</field>
+      <field name="res_model">item.item</field>
       <field name="view_mode">tree</field>
       <field name="domain">[]</field>
       <field name="context">{}</field>
