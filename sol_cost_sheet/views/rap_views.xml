@@ -27,10 +27,13 @@
                 <form string="">
                     <header>
                         <button string="View Items" name="view_component_rap" type="object" class="oe_highlight"/>
-                        <!-- <button string="Submit" name="action_submit" attrs="{'invisible':[('state','!=', 'draft')]}" type="object" class="oe_highlight"/>
-                        <button string="Approve" name="waiting_approval" type="object" attrs="{'invisible':[('is_approver','=', False)]}" class="oe_highlight"/>
-                        <button string="Set to Draft" name="action_to_draft" attrs="{'invisible':[('state','!=', 'done')]}" type="object"/> -->
-                        <field name="state" widget="statusbar" statusbar_visible="draft,submit,done" />
+                        <button string="Submit" name="action_submit" states="draft,revisied" type="object" class="oe_highlight"/>
+                        <button string="Approve" name="action_approve_gm" states="waiting_approve_gm" type="object" class="oe_highlight"/>
+                        <button string="Approve" name="action_approve_dir" states="waiting_approve_dir" type="object" class="oe_highlight"/>
+                        <button string="Revision" name="action_revision" states="done,waiting_approve_gm,waiting_approve_dir" type="object" class="oe_highlight"/>
+                        <button string="Cancel" name="action_cancel" states="done" type="object"/>
+                        <button string="Set to Draft" name="action_to_draft" states="done" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,waiting_approve_gm,waiting_approve_dir,done" />
                     </header>
                     <sheet>
                         <!-- <div class="oe_button_box" name="button_box">
@@ -89,12 +92,14 @@
                         <group>
                             <field name="rap_id" readonly="1" force_save="1" />
                             <field name="product_id" readonly="1" force_save="1" />
+                            <field name="rap_state" invisible="0" />
                         </group>
-                        <field name="parent_component_line_ids" context="{'default_rap_id':parent.rap_id}">
+                        <field name="parent_component_line_ids" context="{'default_rap_id':parent.rap_id,'default_rab_id':False}">
                             <tree editable="bottom">
                                 <field name="rap_id" readonly="1" force_save="1" />
                                 <field name="product_id" />
-                                <button name="action_view_items" type="object" icon="fa-pencil-square-o" />
+                                <button name="action_view_items_rap" type="object" icon="fa-pencil-square-o" attrs="{'column_invisible':[('parent.rap_state','=','revisied')]}" />
+                                <button name="action_view_items_rap_revisied" type="object" icon="fa-pencil-square-o" attrs="{'column_invisible':[('parent.rap_state','!=','revisied')]}" />
 
                             </tree>
                         </field>
@@ -102,6 +107,81 @@
                 </form>
             </field>
         </record>
+
+        <!-- RAP Component View -->
+        <record id="rap_component_component_view_form" model="ir.ui.view">
+            <field name="name">rap.component.component.view.form</field>
+            <field name="model">component.component</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button string="Get Items" name="get_items" type="object" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <!-- <field name="cost_sheet_id" readonly="1" /> -->
+                            <field name="rap_id" readonly="1" />
+                            <field name="category_id" readonly="1" />
+                            <field name="product_id" readonly="1" />
+                            <field name="rap_state" invisible="1" />
+                        </group>
+                        <field name="item_ids" context="{'default_category_id':parent.category_id,'default_rap_id':parent.rap_id,'default_cost_sheet_id':False}">
+                            <tree editable="bottom">
+                                <field name="rap_id" readonly="1" force_save="1" invisible="1" />
+                                <field name="cost_sheet_id" readonly="1" force_save="1" invisible="1" />
+                                <field name="category_id" readonly="1" force_save="1" invisible="1" />
+                                <field name="product_id" />
+                                <field name="uom_id" />
+                                <field name="product_qty" />
+                                <field name="existing_price" />
+                                <field name="rfq_price" />
+                                <field name="total_price" />
+                                <field name="remarks" />
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- RAP Component View In Revisied (add context in item_ids)-->
+        <record id="rap_revisied_component_component_view_form" model="ir.ui.view">
+            <field name="name">rap.revisied.component.component.view.form</field>
+            <field name="model">component.component</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button string="Get Items" name="get_items" type="object" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <!-- <field name="cost_sheet_id" readonly="1" /> -->
+                            <field name="rap_id" readonly="1" />
+                            <field name="category_id" readonly="1" />
+                            <field name="product_id" readonly="1" />
+                            <field name="rap_state" invisible="1" />
+                        </group>
+                        <field name="item_ids" context="{'default_revisied':True,'default_category_id':parent.category_id,'default_cost_sheet_id':False,'default_rap_id':parent.rap_id}">
+                            <tree editable="bottom">
+                                <field name="rap_id" readonly="1" force_save="1" invisible="1" />
+                                <field name="cost_sheet_id" readonly="1" force_save="1" invisible="1" />
+                                <field name="category_id" readonly="1" force_save="1" invisible="1" />
+                                <field name="product_id" />
+                                <field name="uom_id" />
+                                <field name="product_qty" />
+                                <field name="existing_price" />
+                                <field name="rfq_price" />
+                                <field name="total_price" />
+                                <field name="remarks" />
+                                <field name="revisied" invisible="1" />
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
 
 
         <record id="cost_sheet_rap_action" model="ir.actions.act_window">

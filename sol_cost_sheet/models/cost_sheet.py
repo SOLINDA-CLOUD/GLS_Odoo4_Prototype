@@ -308,27 +308,37 @@ class ComponentComponent(models.Model):
     
     total_price = fields.Float(compute='_compute_total_price', string='Total Amount')
     created_after_approve = fields.Boolean('Created After Approve')
+    rap_state = fields.Selection(related='rap_id.state',store=True)
+    
 
     
     @api.depends('item_ids.total_price')
     def _compute_total_price(self):
         for this in self:
-            this.total_price = sum(this.item_ids.mapped('total_price'))
+            this.total_price = sum(this.item_ids.filtered(lambda x:x.cost_sheet_id).mapped('total_price'))
     
-    @api.constrains('product_id')
-    def _constrains_product_id(self):
-        for this in self:
-            data = this.env['component.component'].search([('cost_sheet_id', '=', this.cost_sheet_id.id),('category_id', '=', this.category_id.id),('product_id', '=', this.product_id.id)])
-            if len(data) > 1:
-                raise ValidationError('Cannot create same product in one component')
+    # @api.constrains('product_id')
+    # def _constrains_product_id(self):
+    #     for this in self:
+    #         data = this.env['component.component'].search([('cost_sheet_id', '=', this.cost_sheet_id.id),('category_id', '=', this.category_id.id),('product_id', '=', this.product_id.id)])
+    #         if len(data) > 1:
+    #             raise ValidationError('Cannot create same product in one component')
     
     def get_items(self):
-        pass
+        master = self.env['master.item'].search([('component_id', '=', self.id)])
+        if master:
+            self.write({
+                'item_ids':[(0,0,{
+                    'product_id': item.product_id.id
+                }) for item in master[0].item_line_ids]
+            })
+        else:
+            raise ValidationError('Master data items for Component %s does not exist'%(self.product_id.display_name))
     
-    @api.onchange('category_id')
-    def _onchange_category_id(self):
-        if self.category_id:
-            self.cost_sheet_id = self.category_id.cost_sheet_id.id
+    # @api.onchange('category_id')
+    # def _onchange_category_id(self):
+    #     if self.category_id:
+    #         self.cost_sheet_id = self.category_id.cost_sheet_id.id
 
     def action_view_items(self):
         return {
@@ -337,6 +347,25 @@ class ComponentComponent(models.Model):
                 'view_mode': 'form',
                 'res_model': 'component.component',
                 'res_id': self.id,
+            }
+    
+    def action_view_items_rap(self):
+        return {
+                'name': 'Item for %s'%self.product_id.display_name,
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'res_model': 'component.component',
+                'res_id': self.id,
+                'view_id': self.env.ref('sol_cost_sheet.rap_component_component_view_form').id
+            }
+    def action_view_items_rap_revisied(self):
+        return {
+                'name': 'Item for %s'%self.product_id.display_name,
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'res_model': 'component.component',
+                'res_id': self.id,
+                'view_id': self.env.ref('sol_cost_sheet.rap_revisied_component_component_view_form').id
             }
     
     

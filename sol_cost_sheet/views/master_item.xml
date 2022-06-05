@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="master_item_view_tree" model="ir.ui.view">
+        <field name="name">master.item.view.tree</field>
+        <field name="model">master.item</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <field name="component_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="master_item_view_form" model="ir.ui.view">
+        <field name="name">master.item.view.form</field>
+        <field name="model">master.item</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="component_id" />
+                    </group>
+                    <group string="Items">
+                        <field name="item_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="product_id" />
+                            </tree>
+                        </field>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="master_item_action" model="ir.actions.act_window">
+        <field name="name">Master Data Item</field>
+        <field name="res_model">master.item</field>
+        <field name="view_mode">tree,form</field>
+        <!-- <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            
+        </field> -->
+    </record>
+</odoo>

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from . import master_item
 from . import crm
 from . import sale
 from . import project

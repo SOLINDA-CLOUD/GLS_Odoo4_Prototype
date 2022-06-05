@@ -2,6 +2,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools.float_utils import float_round
 
+
 class CsRAP(models.Model):
     _name = 'rap.rap'
     _description = 'RAP'
@@ -12,24 +13,44 @@ class CsRAP(models.Model):
     project_id = fields.Many2one('project.project', string='Project')
     date_document = fields.Date('Request Date',tracking=True,default=fields.Date.today)
     user_id = fields.Many2one('res.users', string='Responsible',default=lambda self:self.env.user.id)
-    # rab_template_id = fields.Many2one('rab.template', string='RAB Template',tracking=True)
-    # line_ids = fields.One2many('project.rap', 'rap_id', string='RAP')  
     note = fields.Text('Term and condition')
     # approval_id = fields.Many2one('approval.approval', string='Approval')
     # approver_id = fields.Many2one('approver.line', string='Approver')
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('submit', 'Submited'),
-        ('waiting', 'Waiting Approval'),
+        ('waiting_approve_gm', 'Waiting Approval GM'),
+        ('waiting_approve_dir', 'Waiting Approval Direksi'),
         ('done', 'Done'),
+        ('revisied', 'Revisied'),
         ('cancel', 'Canceled'),
     ], string='Status',tracking=True, default="draft")
     category_line_ids = fields.One2many('rap.category', 'rap_id', string='Category Line')
-    # purchase_id = fields.Many2one('purchase.requisition', string='Purchase')
+    
 
     currency_id = fields.Many2one('res.currency', string='currency',default=lambda self:self.env.company.currency_id.id)
     # is_approver = fields.Boolean(compute='_compute_is_approver', string='Is Approver')
     
+    @api.model
+    def create(self, vals):
+        res = super(CsRAP, self).create(vals)
+        res.name = self.env["ir.sequence"].next_by_code("rap.rap")
+        # res.crm_id.rab_id = res.id
+        return res 
+    
+    def action_submit(self):
+        self.write({'state':'waiting_approve_gm'})
+    def action_approve_gm(self):
+        self.write({'state':'waiting_approve_dir'})
+    def action_approve_dir(self):
+        self.write({'state':'done'})
+    def action_to_draft(self):
+        self.write({'state':'draft'})
+    def action_cancel(self):
+        self.write({'state':'cancel'})
+    def action_revision(self):
+        self.write({'state':'revisied'})
+        
+
     
     def view_component_rap(self):
         return {
@@ -101,26 +122,8 @@ class CsRAP(models.Model):
         }
 
         
-    def action_submit(self):
-        
-        self.write({'state':'submit'})
-        # self.waiting_approval()
-
-    def action_done(self):
-        self.write({'state':'done'})
-        
-    def action_approve(self):
-        self.write({'state':'approved'})
-    def action_to_draft(self):
-        # self.write({'state':'draft','approval_id':False,'approver_id':False})
-        self.write({'state':'draft'})
-
-    @api.model
-    def create(self, vals):
-        res = super(CsRAP, self).create(vals)
-        res.name = self.env["ir.sequence"].next_by_code("rap.rap")
-        # res.crm_id.rab_id = res.id
-        return res 
+   
+    
 
 class RapCategory(models.Model):
     _name = 'rap.category'
@@ -136,9 +139,10 @@ class RapCategory(models.Model):
     rab_price = fields.Float('RAB Price')
     price_unit = fields.Float('Price')
     subtotal_amount = fields.Float(compute='_compute_subtotal_amount', string='Subtotal')
+    rap_state = fields.Selection(related='rap_id.state',store=True)
+
     
     def action_view_detail_rap(self):
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         return {
                 'name': 'Component RAP',
                 'type': 'ir.actions.act_window',

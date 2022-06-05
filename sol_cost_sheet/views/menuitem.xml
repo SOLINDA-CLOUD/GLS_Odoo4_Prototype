@@ -6,4 +6,9 @@
     <!-- <menuitem id="cost_sheet_component_menu" name="Cost Sheet Component" sequence="2" parent="cost_sheet_root_menu" action="costsheet_component_action"/> -->
     <menuitem id="rap_menu" name="RAP" sequence="2" parent="cost_sheet_root_menu" action="cost_sheet_rap_action"/>
 
+    <!-- Menu Configuration -->
+    <menuitem id="cost_sheet_configuration_menu" name="Configuration" sequence="99" parent="cost_sheet_root_menu"/>
+    <menuitem id="master_item_menu" name="Master Data Item" sequence="1" parent="cost_sheet_configuration_menu" action="master_item_action"/>
+
+
 </odoo>

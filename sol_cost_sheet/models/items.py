@@ -1,4 +1,5 @@
 from odoo import _, api, fields, models
+from odoo.tools.misc import get_lang
 
 from odoo.exceptions import ValidationError
 
@@ -16,9 +17,9 @@ class Item(models.Model):
     component_id = fields.Many2one('component.component',ondelete="cascade")
     product_type = fields.Selection(related='product_id.detailed_type',store=True)
     qty_on_hand = fields.Float('Qty On Hand',related='product_id.qty_available')
-    
+    uom_id = fields.Many2one('uom.uom')
     product_qty = fields.Integer('Quantity',default=1)
-    existing_price = fields.Float('Existing Price')
+    existing_price = fields.Float('Existing Price',related='product_id.list_price',store=True)
     rfq_price = fields.Float('RFQ Price')
     total_price = fields.Float(compute='_compute_total_price', string='Total Price',store=True)
     remarks = fields.Text('Remarks')
@@ -26,6 +27,15 @@ class Item(models.Model):
     can_be_purchased = fields.Boolean(compute='_compute_can_be_purchased', string='Can BE Purchased',store=True)
     rap_price = fields.Float('Price',default=lambda self:self.total_price)
     purchase_line_ids = fields.One2many('purchase.request.line', 'item_id', string='Purchase Line')
+    revisied = fields.Boolean('Revisied')
+    
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        if not self.product_id:
+            return
+
+        self.uom_id = self.product_id.uom_po_id or self.product_id.uom_id
+        
     
     @api.depends('qty_on_hand','product_qty')
     def _compute_can_be_purchased(self):
@@ -44,10 +54,10 @@ class Item(models.Model):
             if len(data) > 1:
                 raise ValidationError('Cannot create same product in one item')
 
-    @api.onchange('category_id')
-    def _onchange_category_id(self):
-        if self.category_id or self.component_id:
-            self.cost_sheet_id = self.category_id.cost_sheet_id.id or self.component_id.cost_sheet_id.id
+    # @api.onchange('category_id')
+    # def _onchange_category_id(self):
+    #     if self.category_id or self.component_id:
+    #         self.cost_sheet_id = self.category_id.cost_sheet_id.id or self.component_id.cost_sheet_id.id
     
     
     def view_item_in_purchase(self):

@@ -8,3 +8,5 @@ sol_cost_sheet.access_ga_project,access_ga_project,sol_cost_sheet.model_ga_proje
 sol_cost_sheet.access_waranty_waranty,access_waranty_waranty,sol_cost_sheet.model_waranty_waranty,base.group_user,1,1,1,1
 sol_cost_sheet.access_rap_category,access_rap_category,sol_cost_sheet.model_rap_category,base.group_user,1,1,1,1
 sol_cost_sheet.access_rap_rap,access_rap_rap,sol_cost_sheet.model_rap_rap,base.group_user,1,1,1,1
+sol_cost_sheet.access_master_item,access_master_item,sol_cost_sheet.model_master_item,base.group_user,1,1,1,1
+sol_cost_sheet.access_master_item_line,access_master_item_line,sol_cost_sheet.model_master_item_line,base.group_user,1,1,1,1
